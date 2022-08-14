@@ -1,0 +1,47 @@
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: monospace;
+}
+
+.main {
+  padding-top: 5%;
+  padding-left: 3%;
+}
+
+.button {
+  font-family: monospace;
+  border: 0px;
+  outline:0px;
+}
+
+/* .chart {
+  
+} */
+
+.child {
+  display: inline-block;
+  padding: 1rem 1rem;
+  vertical-align: middle;
+  width: 400px;
+}
+
+table, tr, td {
+  border-collapse: collapse;
+  border: 1px solid;
+}
+
+
+
+.first_col {
+  font-weight: bold; 
+  width: 180px;
+}
+
+.sec_col {
+  width: 95px;
+}
+
