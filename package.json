@@ -2,6 +2,7 @@
   "name": "nodejs",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,7 +12,14 @@
   "license": "ISC",
   "dependencies": {
     "@types/node": "^18.0.6",
+    "csv-write-stream": "^2.0.0",
+    "csv-writer": "^1.6.0",
+    "ejs": "^3.1.8",
     "express": "^4.18.1",
-    "node-fetch": "^3.2.6"
+    "mongodb": "^4.8.1",
+    "mongoose": "^6.5.2",
+    "nedb": "^1.8.0",
+    "node-fetch": "^3.2.6",
+    "routes": "^2.1.0"
   }
 }

@@ -1,4 +1,4 @@
-
+// Declare object to store tokens
 const tokens = {
   Bitcoin: {
     symbol: "btc"
@@ -33,7 +33,18 @@ const tokens = {
 }
 
 
-async function load(token) {
+async function getDB() {
+  const res = await fetch('/api');
+  const data = await res.json();
+  return data;
+}
+getDB();
+
+
+
+
+
+async function getPastMonthVol(token) {
   let past_month_vol = [];
   
   const res = await fetch("data/historical_data_" + tokens[token].symbol + ".csv");
@@ -52,28 +63,32 @@ async function load(token) {
   //past_month_vol = past_month_vol.reverse();
   
   //console.log(dates, prices, addresses_count);
+  
   return past_month_vol;
 }
 
-async function populateVol() {
-  for (let token in tokens) {
-    let avg = await getAvgVolume(token);
-    tokens[token]["avg_vol"] = avg;
-  }
-  console.log(tokens);
-}
-
 async function getAvgVolume(token) {
-  let vol = await load(token);
+  let vol = await getPastMonthVol(token);
   vol = vol.slice(0, 29);
 
-  console.log('volumes ' + vol);
+  //console.log('volumes ' + vol);
   let sum = BigInt(0);
   vol.forEach(el => {
     sum += BigInt(Math.floor(el));
   });
   return sum/29n;
 }
+
+// Add average volume over last month to token obj
+async function populateVol() {
+  for (let token in tokens) {
+    let avg = await getAvgVolume(token);
+    tokens[token]["avg_vol"] = avg;
+  }
+  //console.log(tokens);
+}
+
+
 
 // Get daily data for a token
 async function getTodayData(token) {
@@ -85,17 +100,17 @@ async function getTodayData(token) {
 }
 
 
-// have the average volume over the past month for each token in the list
-
-
+// Add 24h data to tokens obj
 async function populate24hChange() {
   await populateVol();
+  //const db = await getDB();
 
-
-  for (let token in tokens) {
+  // SORT ARRAY
+  // token is an object
+  for (let token in db) {
     // get today data for token
-    let today = await getTodayData(token);
-    console.log(today);
+    //let tokenData = allData;
+    //console.log(today);
 
       let today_vol = today["market_data"]["real_volume_last_24_hours"].toLocaleString().replaceAll(',', '');
     let price_change;
@@ -103,7 +118,7 @@ async function populate24hChange() {
     let daily_price = today["market_data"]["price_usd"].toLocaleString().replaceAll(',', '');
    
     let change_vol = (today_vol / Number(tokens[token].avg_vol) - 1) * 100;
-    console.log(token + ' volume change last 24h ' + change_vol);
+    //console.log(token + ' volume change last 24h ' + change_vol);
     tokens[token]["vol_change_last_24h"] = change_vol;
     
     tokens[token]["daily_price"] = daily_price;
@@ -121,23 +136,10 @@ async function populate24hChange() {
 }
 
 
-// async function getTodayDataOther(token) {
-//   let data;
-//   const res = await fetch("https://data.messari.io/api/v1/assets/" + tokens[token].symbol + "/metrics")  .then(res => res.json())
-//   .then(messariRes => data = messariRes.data)
-//   .then(
-//     payload => { data = payload.market_data[metric].toLocaleString().replaceAll(',', '');
-            
-//     })
-
-  
-//   return data;
-// }
-
-
-async function idMovers() {
+// Create an array containing names of tokens on watchlist
+async function getTokensArr() {
   await populate24hChange();
-  console.log(tokens);
+  //console.log(tokens);
   let movers = [];
 
   for (let token in tokens) {
@@ -151,9 +153,12 @@ async function idMovers() {
 
 
 async function displayMovers() {
-  let movers = await idMovers();
-  movers = movers.reverse()
-  if (movers.length > 0) {
+  document.getElementById("movers").innerHTML = 'Loading data...';
+  //let movers = await getTokensArr();
+  let tokens = await getDB();
+  document.getElementById("movers").innerHTML = '';
+  tokens = tokens.reverse()
+  if (tokens.length > 0) {
 
     var myTableDiv = document.getElementById("movers");
 
@@ -210,20 +215,7 @@ async function displayMovers() {
       
       c4.innerHTML = (Math.floor(tokens[movers[i]].vol_change_last_24h) > 0) ? ('+' + Math.floor(tokens[movers[i]].vol_change_last_24h) + '%') : (Math.floor(tokens[movers[i]].vol_change_last_24h) + '%');
 
-      
-      
-      
-      
-      if (tokens[movers[i]]["vol_change_last_24h"] > 10 && tokens[movers[i]]["price_change_last_24h"] > 5) {
-      r.style.background  = '#71eb7f';
-       // r.classList.add('green_class');
-      
-    }
-      else if (tokens[movers[i]]["vol_change_last_24h"] > 10 && tokens[movers[i]]["price_change_last_24h"] < 0) {
-      // c3.innerHTML.style.color  = 'red';
-      // c4.innerHTML.style.color  = 'red';
-        r.style.background  = '#eb7171';
-    }
+    //table.className = 'table_styling';
     myTableDiv.appendChild(table);
     
   }

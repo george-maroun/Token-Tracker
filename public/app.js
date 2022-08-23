@@ -6,46 +6,15 @@ let price_chart;
 let users_chart;
 
 // Hide table
-const tabl = document.getElementById('tabl');
-tabl.style.visibility = 'hidden';
+// const tabl = document.getElementById('tabl');
+// tabl.style.visibility = 'hidden';
 
 // Get token name 
 let tokenName = document.getElementById("token").value;
 console.log(tokenName);
 
 // Each token's info
-const info = {
-  Bitcoin: {
-    symbol: "btc"
-  },
-  Ethereum: {
-    symbol: "eth"
-  },
-  Solana: {
-    symbol: "sol"
-  }, 
-  LidoDAO: {
-    symbol: "ldo"
-  },
-  Polygon: {
-    symbol: "matic"
-  },
-  Uniswap: {
-    symbol: "uni"
-  },
-  Sushiswap: {
-    symbol: "sushi"
-  },
-  Curve: {
-    symbol: "crv"
-  },
-  Synthetix: {
-    symbol: "snx"
-  },
-  THORChain: {
-    symbol: "rune"
-  }
-}
+
 
 
 // Declare global variables to store chart data
@@ -57,7 +26,7 @@ let addresses_count = [];
 
 // Get data from file/api and store in global vars
 async function loadData() {
-  const res = await fetch("data/historical_data_" + info[tokenName].symbol + ".csv");
+  const res = await fetch("historical_data_" + info[tokenName].symbol + ".csv");
   const text = await res.text();
   // historical_data_btc.csv
   
@@ -83,16 +52,6 @@ async function loadData() {
 
 
 
-async function getData() {
-  const res = await fetch("https://data.messari.io/api/v1/assets/" + info[tokenName].symbol + "/metrics")  .then(res => res.json())
-  .then(messariRes => messariRes.data)
-  .then(
-    payload => { prices.push(payload.market_data.price_usd.toLocaleString().replaceAll(',', ''));
-       addresses_count.push(payload.on_chain_data.addresses_balance_greater_1_usd_count.toLocaleString().replaceAll(',', ''));         
-    })
-  dates.push(new Date().toISOString().slice(0, 10));
-  
-}
 
 // Assign chart parameters
 
@@ -188,46 +147,99 @@ async function makeChart() {
 
 }
 
+async function getTableData() {
+  let data;
+  const res = await fetch("https://data.messari.io/api/v1/assets/" + info[tokenName].symbol + "/metrics")  .then(res => res.json())
+  .then(messariRes => data = messariRes.data)
+
+  return data;
+}
+
+
+async function makeTableDataObj() {
+  let data = await getTableData(); 
+  let dataObj = {};
+  dataObj["Current Price"] = "$" + data.market_data.price_usd.toLocaleString();
+
+  try { 
+    dataObj["Percent Change 1W"] = (data["roi_data"]["percent_change_last_1_week"].toLocaleString()[0] === '-') ? (data["roi_data"]["percent_change_last_1_week"].toLocaleString() + "%") : ('+' + data["roi_data"]["percent_change_last_1_week"].toLocaleString() + "%");
+
+  dataObj["Percent Change 1M"] = (data["roi_data"]["percent_change_last_1_month"].toLocaleString()[0] === '-') ? (data["roi_data"]["percent_change_last_1_month"].toLocaleString() + "%") : ('+' + data["roi_data"]["percent_change_last_1_month"].toLocaleString() + "%");
+
+    dataObj["Percent Change 3M"] = (data["roi_data"]["percent_change_last_3_months"].toLocaleString()[0] === '-') ? (data["roi_data"]["percent_change_last_3_months"].toLocaleString() + "%") : ('+' + data["roi_data"]["percent_change_last_3_months"].toLocaleString() + "%");
+
+    dataObj["Percent Change 1Y"] = (data["roi_data"]["percent_change_last_1_year"].toLocaleString()[0] === '-') ? (data["roi_data"]["percent_change_last_1_year"].toLocaleString() + "%") : ('+' + data["roi_data"]["percent_change_last_1_year"].toLocaleString() + "%");
+  }
+    catch (error) {
+  console.error(error);
+  }
+
+  try {
+    dataObj["Active Addresses"] = data["on_chain_data"]["active_addresses"].toLocaleString();
+    dataObj["Tx Volume Last 24h (USD)"] = '$' + data["on_chain_data"]["txn_volume_last_24_hours_usd"].toLocaleString();
+  }
+  catch (error) {
+  console.error(error);
+  }
+  
+  console.log("stat obj" + dataObj);
+  return dataObj;
+}
+
+async function makeTable() {
+  let obj = await makeTableDataObj();
+  let a = [];
+  for (let k in obj) {a.push(k)}
+  let rev = a.reverse();
+  console.log("REVERSE" + rev);
+  var myTable = document.getElementById("statsTable");
+
+    var table = document.createElement('Tb');
+   
+    var tableBody = document.createElement('Tbody');
+    
+    table.appendChild(tableBody);
+
+    for (let el of rev) {
+      var tr = document.createElement('tr');
+      tableBody.appendChild(tr);
+      var r = tableBody.insertRow(0);
+      var c = r.insertCell(0);
+      var c1 = r.insertCell(1);
+      c.innerHTML = "<b>" + el + "</b>";
+      c.style.width = '205px';
+      c1.innerHTML = obj[el];
+    }
+     table.className = 'table_styling';
+     myTable.appendChild(table);
+  
+}
+
 
 function displayStats() {
   if (info.hasOwnProperty(tokenName)) {
-  makeChart();
-  //setInterval(() => makeChart(), 5000);
-  
-  window
-    .fetch("https://data.messari.io/api/v1/assets/" + info[tokenName].symbol + "/metrics")
-    .then(res => res.json())
-    .then(messariRes => messariRes.data)
-    .then(
-      payload => {
-        (document.getElementById("current-token-price").innerHTML = payload.market_data.price_usd.toLocaleString());
-
-        if (payload.on_chain_data.addresses_balance_greater_1_usd_count) {
-        (document.getElementById("current-token-addresses").innerHTML = payload.on_chain_data.addresses_balance_greater_1_usd_count.toLocaleString());
-        }
-        else {
-          document.getElementById("current-token-addresses").innerHTML = ' -';
-        }
-      }
-    );
+    makeChart();
+    makeTable();
   }
 }
 
 function setValue() {
+  
+  
+  document.getElementById('statsTable').innerHTML = '';
   tokenName = document.getElementById("token").value;
   if (tokenName !== 'placeholder') {
-    tabl.style.visibility = 'visible';
-
     
     document.getElementById('name').innerHTML = tokenName;
 
-    document.getElementById('table_title').innerHTML = 'Token stats';
-    document.getElementById('currPrice').innerHTML = 'Current price';
-    document.getElementById('currAdd').innerHTML = 'Addresses holding > $1';
+    document.getElementById('table_title').innerHTML = 'Stats';
 
     document.getElementById('figs').innerHTML = 'Charts';
     displayStats();
+
+    
   }
+  
 }
 
 

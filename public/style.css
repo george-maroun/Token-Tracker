@@ -26,22 +26,29 @@ body {
   display: inline-block;
   padding: 1rem 1rem;
   vertical-align: middle;
-  width: 400px;
+  width: 40%;
 }
 
 table, tr, td {
   border-collapse: collapse;
-  border: 1px solid;
+  border: 1px solid !important;
 }
 
 
 
 .first_col {
   font-weight: bold; 
-  width: 180px;
 }
 
-.sec_col {
-  width: 95px;
+.table_styling {
+  border-collapse: collapse;
 }
 
+.link {
+  color: black;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
