@@ -168,7 +168,13 @@ import csvWriter from 'csv-write-stream';
 
 import projectRouter from './routes/projects.js'
 
+import path from 'path'
 
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // const fetch = require('node-fetch');
 
@@ -185,12 +191,13 @@ app.listen(3000, () => {
   console.log('server started');
 });
 
+app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs')
-app.use(express.static('views'));
+app.use(express.static('public'));
 app.use(express.static('historical_data'));
 app.use(express.json({limit : '1mb'}));
 app.use('/projects', projectRouter)
-
+//app.use(express.static(path.join(__dirname, 'views')))
 
 
 
@@ -221,7 +228,7 @@ app.get('/api', (request, response) => {
 // })
 
 
-
+const historic = ["price_usd", "volume_last_24_hours", "txn_volume_last_24_hours_usd", "active_addresses", "addresses_balance_greater_10_usd_count"];
 // Updat CSVs 
 setInterval(function () {
   var all = null
@@ -237,21 +244,24 @@ function updateCSVs(data, cb) {
   for (let token of data) {
   // get token symbol
     let sym = token.symbol;
-    if (sym === 'btc') {
+    //if (sym === 'api3') {
   // for each metric in metrics
       if (token.metrics) {
         for (let metric in token.metrics) {
           // append(sym, met)
-          try {
-            cb(sym, token, metric);
-          }
-          catch {
-            console.log('no csv data for :' + sym);
+          if (historic.includes(metric)) {
+            try {
+              cb(sym, token, metric);
+            }
+            catch {
+              console.log('no csv data for :' + sym);
+            }
           }
         }
       }
-    }
+    //}
   }
+  console.log('updated');
 }
 
 
@@ -260,21 +270,24 @@ function updateCSVs(data, cb) {
 
 function append(sym, token, met) {
   //console.log(met);
+  let parentPath = "public/historical_data/" + sym;
   let finalPathFile = "public/historical_data/" + sym + "/" + met + ".csv"
   let today = new Date().toISOString().slice(0, 10);
-  
-  var writer = csvWriter()
-  if (!fs.existsSync(finalPathFile))
-    writer = csvWriter({ headers: ["header1", "header2"]});
-  else
-    writer = csvWriter({sendHeaders: false});
-  
-  writer.pipe(fs.createWriteStream(finalPathFile, {flags: 'a'}));
-  writer.write({
-    header1: today,
-    header2: token.metrics[met].replaceAll(',', '')
-  });
-  writer.end();
+  //let today = '2022-08-23';
+  if (fs.existsSync(parentPath)) {
+    var writer = csvWriter()
+    if (!fs.existsSync(finalPathFile))
+      writer = csvWriter({ headers: ["header1", "header2"]});
+    else
+      writer = csvWriter({sendHeaders: false});
+    
+    writer.pipe(fs.createWriteStream(finalPathFile, {flags: 'a'}));
+    writer.write({
+      header1: today,
+      header2: token.metrics[met].replaceAll(',', '')
+    });
+    writer.end();
+  }
 }
 
 
@@ -290,7 +303,7 @@ function append(sym, token, met) {
 
 
 
-//const historic = ["price_usd", "volume_last_24_hours", "txn_volume_last_24_hours_usd", "active_addresses", "addresses_balance_greater_10_usd_count"];
+
 // Update database every 24h
 setInterval(
   async () => {
@@ -340,7 +353,7 @@ setInterval(
             }
           
             try {
-                obj["txn_volume_last_24_hours_usd volume"] = data["on_chain_data"]["txn_volume_last_24_hours_usd"].toLocaleString().replaceAll(',', '');
+                obj["txn_volume_last_24_hours_usd"] = data["on_chain_data"]["txn_volume_last_24_hours_usd"].toLocaleString().replaceAll(',', '');
                 obj["active_addresses"] = data["on_chain_data"]["active_addresses"].toLocaleString().replaceAll(',', '');
                 obj["addresses_balance_greater_10_usd_count"] = data["on_chain_data"]["addresses_balance_greater_10_usd_count"].toLocaleString().replaceAll(',', '');
             }
@@ -350,7 +363,7 @@ setInterval(
 
             updateToken(sym, obj, today);
         }
-    }, 6000000);
+    }, 3600000);
 
 // await updateAll();
 

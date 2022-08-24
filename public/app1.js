@@ -9,10 +9,12 @@ let users_chart;
 // const tabl = document.getElementById('tabl');
 // tabl.style.visibility = 'hidden';
 
-// Get token name 
-let tokenName = document.getElementById("token").value;
-// console.log(tokenName);
-//let tokenName = 'Bitcoin';
+let sym = document.getElementById('symbol').innerHTML;
+console.log(sym);
+
+let tokenName;
+
+let data; 
 
 // get db
 async function getDB() {
@@ -22,14 +24,16 @@ async function getDB() {
 }
 
 function findToken(arr) {
+  //let arr = await getDB();
   for (let token of arr) {
-    if (token.name === tokenName) {
+    if (token.symbol === sym) {
+      //console.log(token)
       return token; 
     }
   }
   return;
 }
-
+//findToken();
 const info = {};
 
 // Declare global variables to store chart data
@@ -45,15 +49,17 @@ async function loadData() {
   const db = await getDB();
   // get token object
   const tokenObj = findToken(db);
-
-  let metrics
+  console.log(tokenObj);
+  let metrics;
   try {
     metrics = tokenObj.metrics;
   }
   catch {
-    return;
+    document.getElementById('name').innerHTML = 'no chart data';
   }
-  info[tokenName] = {};
+  tokenName = tokenObj.name;
+  info[sym] = {name: tokenName};
+  document.getElementById('name').innerHTML = tokenName;
   // for each metric in metrics
   for (let metric in metrics) {
     
@@ -70,17 +76,17 @@ async function loadData() {
     const table = text.split('\n').slice(1);
     //console.log(rows);
     const firstRow = first.toString().split(',');
-    console.log('first row ! ' + firstRow);
+    //console.log('first row ! ' + firstRow);
     let dates = firstRow[0].replaceAll('"', '');
     let y = firstRow[1].replaceAll('"', '');
-    info[tokenName][metric] = {};
-    info[tokenName][metric][dates] = [];
-    info[tokenName][metric][y] = [];
+    info[sym][metric] = {};
+    info[sym][metric][dates] = [];
+    info[sym][metric][y] = [];
     for (let j = 0; j < table.length; j++) {
       const row = table[j].split(',');
       
-      info[tokenName][metric][dates].push(row[0].replaceAll('"', ''));
-      info[tokenName][metric][y].push(row[1].replaceAll('"', ''));
+      info[sym][metric][dates].push(row[0].replaceAll('"', ''));
+      info[sym][metric][y].push(row[1].replaceAll('"', ''));
       }
     }
     catch {
@@ -100,13 +106,13 @@ async function loadData() {
   console.log(info);
 }
 
-loadData();
+//loadData();
 
 
 // Assign chart parameters
 
 function assignChartData(y) {
-const labels = info[tokenName].price_usd["Date"].splice(900);
+const labels = info[sym].price_usd["Date"];
 
   y_data = {
     labels: labels,
@@ -115,7 +121,7 @@ const labels = info[tokenName].price_usd["Date"].splice(900);
       backgroundColor: 'RoyalBlue',
       borderColor: 'RoyalBlue',
       borderWidth: 2,
-      data: info[tokenName].price_usd["Price (Close)"].splice(900),
+      data: info[sym].price_usd["Price (Close)"],
       fill: false,
       pointRadius: 0,
       tension: 0.1
@@ -152,22 +158,22 @@ async function makeChart() {
   await loadData();
   
   
-  document.getElementById('usersChart').style.visibility = 'visible';
+  //document.getElementById('usersChart').style.visibility = 'visible';
   //console.log(prices, dates);
   
   //await getData();
 
   //console.log(prices);
   let price_data = assignChartData("Price (Close)");
-  console.log(price_data);
+  console.log("price data " + price_data);
   let users_data;
-  if (info[tokenName].hasOwnProperty("Addresses with balance greater than $1")) {
-      users_data = assignChartData("Addresses with balance greater than $1");
-  }
+  // if (info[sym].hasOwnProperty("Addresses with balance greater than $10")) {
+  //     users_data = assignChartData("Addresses with balance greater than $10");
+  // }
 
   if (!chartCreated) {
     price_chart = new Chart(
-      document.getElementById('priceChart'),
+      document.getElementById('price_usd'),
       config_chart(price_data)
     );
 
@@ -198,6 +204,9 @@ async function makeChart() {
 
 
 
+
+
+
 function displayStats() {
   makeChart();
     //makeTable();
@@ -207,22 +216,21 @@ function displayStats() {
 function setValue() {
   
   
-  document.getElementById('statsTable').innerHTML = '';
-  tokenName = document.getElementById("token").value;
-  if (tokenName !== 'placeholder') {
+  //document.getElementById('statsTable').innerHTML = '';
+  //sym = document.getElementById("token").value;
+  //if (tokenName !== 'placeholder') {
     
-    document.getElementById('name').innerHTML = tokenName;
+    
 
     // document.getElementById('table_title').innerHTML = 'Stats';
 
     document.getElementById('figs').innerHTML = 'Charts';
     displayStats();
 
-    
-  }
+  
   
 }
 
-
+setValue()
 
 

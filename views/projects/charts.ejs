@@ -6,26 +6,21 @@
   <meta name="viewport" content="width=device-width">
   <title>replit</title>
   <link href="style.css" rel="stylesheet" type="text/css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js">
+  </script>
   
 </head>
 <body>
   <div class="main">
+    <a href='/' style="font-size: 25px; text-decoration: none">&#8592;</a>
     <div>
-      <h1>Token tracker</h1>
+      <h1 id="name"></h1> 
+      <h3 id="symbol"><%=sym%></h3>
     </div>
 
-    
-    <br></br>
-    
-    
-    <h2 id="name"><%=sym%></h2>
-    
     <h3 id="table_title"></h3>
     
-    <div id='statsTable'>
-    
-  </div>
+    <div id='statsTable'></div>
   
   
     <h3 id="figs"></h3>
@@ -35,9 +30,13 @@
       
     </div>
   
-<!--     <div class="chart">
-       <canvas id="usersChart"></canvas>
-    </div> -->
+    <div class="chart">
+      <canvas id="price_usd"></canvas>
+      <canvas id="volume_last_24_hours"></canvas>
+       <canvas id="txn_volume_last_24_hours_usd"></canvas>
+      <canvas id="active_addresses"></canvas>
+      <canvas id="addresses_balance_greater_10_usd_count"></canvas>
+    </div> 
   </div>
 
 
@@ -45,14 +44,13 @@
   <br id='bottom'></br>
   <br></br>
   <br ></br>
-<!--   <script src="app.js"></script> -->
-<!--     <script src="app1.js"></script>
-  <script src="table.js"></script> -->
+    <script src="app2.js"></script>
+<!--   <script> console.log(document.getElementById('name').innerHTML) </script> -->
  <!--
   This script places a badge on your repl's full-browser view back to your repl's cover
   page. Try various colors for the theme: dark, light, red, orange, yellow, lime, green,
   teal, blue, blurple, magenta, pink!
-  -->
+ -->
   <script src="https://replit.com/public/js/replit-badge.js" theme="blue" defer></script> 
 </body>
 

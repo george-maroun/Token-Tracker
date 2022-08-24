@@ -52,3 +52,7 @@ table, tr, td {
 a:hover {
   text-decoration: underline;
 }
+
+a:visited { 
+ color: black; 
+}
