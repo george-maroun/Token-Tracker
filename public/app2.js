@@ -1,6 +1,12 @@
 let sym = document.getElementById('symbol').innerHTML;
 console.log(sym);
 
+
+// var baseUrl = (window.location).href; // You can also use document.URL
+// var tok = baseUrl.substring(baseUrl.length-4, 
+//  baseUrl.length-1);
+// alert(tok)//503
+
 let tokenName;
 
 let data; 
