@@ -38,7 +38,7 @@ const tokens = [
   },
   {
     name: "Synthetix",
-    symbol: "snx"
+    symbol: "synthetix"
   },
   {
     name: "ChainLink",
@@ -146,7 +146,7 @@ const tokens = [
   },
   {
     name: "THORChain",
-    symbol: "rune"
+    symbol: "thorchain"
   }
 ]
 
@@ -205,6 +205,10 @@ var db = new Nedb({ filename: 'database.db' });
 
 db.loadDatabase();
 //db.insert(tokens);
+
+app.get('/', (req, res) => {
+  res.render('index.html');
+})
 
 app.get('/api', (request, response) => {
   db.find({}, (err, data) => {
