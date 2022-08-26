@@ -1,7 +1,139 @@
-let sym = document.getElementById('symbol').innerHTML;
-console.log(sym);
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>replit</title>
+<!--   <link href="style.css" rel="stylesheet" type="text/css" /> -->
+  <style>
+    html, body {
+  height: 100%;
+  width: 98%;
+}
+
+body {
+  font-family: monospace;
+}
+
+.main {
+  padding-top: 5%;
+  padding-left: 3%;
+}
+
+.button {
+  font-family: monospace;
+  border: 0px;
+  outline:0px;
+}
+
+/* .chart {
+  
+} */
+
+.child {
+  display: inline-block;
+  vertical-align: middle;
+  padding: 1rem;
+  width: 45%;
+}
+
+table, tr, td {
+  border-collapse: collapse;
+  border: 1px solid !important;
+}
 
 
+
+.first_col {
+  font-weight: bold; 
+}
+
+.table_styling {
+  border-collapse: collapse;
+}
+
+.link {
+  color: black;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a:visited { 
+ color: black; 
+}
+  </style>
+  
+  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js">
+  </script>
+  
+</head>
+<body>
+  <div class="main">
+    <a href='/' style="font-size: 25px; text-decoration: none">&#8592;</a>
+    <div>
+      <h1 id="name"></h1> 
+    </div>
+
+    <h3 id="table_title"></h3>
+    
+    <div id='statsTable'></div>
+
+    <div style="overflow: hidden">
+      <div style="float: left; margin-right: 1rem">
+    <h3 id="figs"></h3>
+        </div>
+          <div style="margin-top: 1rem;">
+    <span><select onchange="makeChart()" name="period" id="period" class="button">
+  <option value="1m">1M</option>
+  <option value="3m">3M</option>
+  <option value="6m">6M</option>
+  <option value="1y">1Y</option>
+     <option value="max">Max</option> 
+</select></span>
+          </div>
+  </div>
+  
+   
+      <div id="price_usd1" class=child>
+        <canvas id="price_usd" ></canvas>
+      </div>
+  
+      <div id="volume_last_24_hours1" class=child>
+        <canvas id="volume_last_24_hours"></canvas>
+      </div>
+      <div id="txn_volume_last_24_hours_usd1" class=child>
+        <canvas id="txn_volume_last_24_hours_usd"></canvas>
+      </div>
+      <div id="active_addresses1" class=child>
+        <canvas id="active_addresses"></canvas>
+      </div>
+      <div id="addresses_balance_greater_10_usd_count1" class=child>
+        <canvas id="addresses_balance_greater_10_usd_count">
+      </div>
+      
+    
+  </div>
+
+
+
+  <br id='bottom'></br>
+  <br></br>
+  <br ></br>
+  <script>
+//     let sym = document.getElementById('symbol').innerHTML;
+// console.log(sym);
+
+    let temp = window.location.href.split('/');
+    let sym = temp[temp.length - 1]
+
+
+
+//alert(sym);
 let tokenName;
 let data; 
 
@@ -49,7 +181,7 @@ async function loadData() {
     
     let res;
     try {
-      res = await fetch("historical_data/" + sym + "/" + metric + ".csv");
+      res = await fetch("/historical_data/" + sym + "/" + metric + ".csv");
     
     //console.log(metric);
     const text = await res.text();
@@ -94,18 +226,25 @@ async function loadData() {
 
 // Assign chart parameters
 
-function assignChartData(y) {
-  const labels = info[sym][y]["Date"];
-  let xy = info[sym][y];
+function assignChartData(y, period) {
+  let labels = structuredClone(info[sym][y]["Date"]);
+  let temp_xy = info[sym][y];
+  let xy = structuredClone(Object.values(temp_xy)[1]);
+  if (period !== 0 && period < labels.length) {
+    labels = labels.splice(labels.length - period);
+    xy = xy.splice(xy.length - period);
+  }
+  
+  
 
   let xy_data = {
     labels: labels,
     datasets: [{
-      label: y,
+      label: Object.keys(temp_xy)[1],
       backgroundColor: 'RoyalBlue',
       borderColor: 'RoyalBlue',
       borderWidth: 2,
-      data: Object.values(xy)[1],
+      data: xy,
       fill: false,
       pointRadius: 0,
       tension: 0.1
@@ -119,6 +258,7 @@ function config_chart(data_arr) {
     type: 'line',
     data: data_arr,
     options: {
+      responsive: true,
       plugins: {
         legend: {
           display: true,
@@ -135,16 +275,34 @@ function config_chart(data_arr) {
   };
 }
 
+function getPeriod() {
+  const periodObj = {
+      "1m": 30,
+      "3m": 90,
+      "6m": 180,
+      "1y": 360,
+      "max": 0
+  }
+
+  let e = document.getElementById("period");
+  let p = e.value;
+
+  let period = periodObj[p];
+  return period;
+}
+
 
 
 
 async function makeChart() {
 
-  await loadData();
+  let period = getPeriod();
 
-  for (let metric in info[sym]) {
+  if (!info[sym]) {
+    await loadData();
+    for (let metric in info[sym]) {
     if (metric !== 'name') {
-      let chart_data = assignChartData(metric);
+      let chart_data = assignChartData(metric, period);
   
       //if (!chartCreated) {
       metric_chart = new Chart(
@@ -152,6 +310,33 @@ async function makeChart() {
         config_chart(chart_data)
       );
     }
+   }
+  } 
+  else {
+    for (let metric in info[sym]) {
+
+      if (metric !== 'name') {
+          document.getElementById(metric).remove();
+
+        let newCanvas = document.createElement("CANVAS");
+        newCanvas.setAttribute('id', metric);
+      
+          document.getElementById(metric + "1").appendChild(newCanvas);
+            
+    
+      let chart_data = assignChartData(metric, period);
+  
+      //if (!chartCreated) {
+      metric_chart = new Chart(
+        document.getElementById(metric),
+        config_chart(chart_data)
+      );
+    }
+   }
+  }
+  
+
+  
     //chartCreated = true; 
    // }
  //    else {
@@ -163,7 +348,9 @@ async function makeChart() {
  //      else {
  // document.getElementById('usersChart').style.visibility = 'hidden';
  //      }
-    }
+  console.log('info');
+  console.log(info);
+    
 }
 
 
@@ -227,5 +414,22 @@ function setValue() {
 }
 
 setValue()
+
+
+
+  </script>
+ <!--
+  This script places a badge on your repl's full-browser view back to your repl's cover
+  page. Try various colors for the theme: dark, light, red, orange, yellow, lime, green,
+  teal, blue, blurple, magenta, pink!
+ -->
+  <script src="https://replit.com/public/js/replit-badge.js" theme="blue" defer></script> 
+</body>
+
+</html>
+
+
+
+
 
 

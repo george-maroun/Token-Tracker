@@ -6,7 +6,8 @@ async function getDB() {
 }
 
 
-
+// NOT USING
+// Get a token's past month volume
 async function getPastMonthVol(token) {
   let past_month_vol = [];
   
@@ -30,6 +31,8 @@ async function getPastMonthVol(token) {
   return past_month_vol;
 }
 
+// NOT USING
+// Calculate a token's past month avg volume
 async function getAvgVolume(token) {
   let vol = await getPastMonthVol(token);
   vol = vol.slice(0, 29);
@@ -42,6 +45,7 @@ async function getAvgVolume(token) {
   return sum/29n;
 }
 
+// NOT USING
 // Add average volume over last month to token obj
 async function populateVol() {
   for (let token in tokens) {
@@ -53,9 +57,9 @@ async function populateVol() {
 
 
 
-
-async function displayMovers() {
-  document.getElementById("movers").innerHTML = 'Loading data...';
+// Display watchlist table
+async function displayWatchlist() {
+  document.getElementById("watchlist").innerHTML = 'Loading data...';
   //let movers = await getTokensArr();
   let tokens = await getDB();
 
@@ -85,12 +89,12 @@ async function displayMovers() {
     }
 });
   
-  document.getElementById("movers").innerHTML = '';
+  document.getElementById("watchlist").innerHTML = '';
   //tokens = tokens.reverse();
   console.log('length = ' + tokens.length);
   if (tokens.length > 0) {
 
-    var myTableDiv = document.getElementById("movers");
+    var myTableDiv = document.getElementById("watchlist");
 
     var table = document.createElement('TABLE');
     table.border = '1';
@@ -102,12 +106,14 @@ async function displayMovers() {
     var cell2 = row.insertCell(2);
     var cell3 = row.insertCell(3);
     var cell4 = row.insertCell(4);
+    // var cell5 = row.insertCell(5);
     cell.innerHTML = "<b>Token</b>"
     cell1.innerHTML = "<b>Symbol</b>";
     cell2.innerHTML = "<b>Price</b>";
     cell3.innerHTML = "<b>Price Change 24h</b>";
     // cell4.innerHTML = "<b>Volume Change vs Average</b>";
     cell4.innerHTML = "<b>Price Change 1M</b>";
+    // cell5.innerHTML = "<b>Wallets Holding > $10</b>";
 
 
 
@@ -130,9 +136,9 @@ async function displayMovers() {
       var c2 = r.insertCell(2);
       var c3 = r.insertCell(3);
       var c4 = r.insertCell(4);
-      
+      // var c5 = r.insertCell(5);
       // Add some text to the new cells:
-      c.innerHTML = `<a href=projects/${tokens[i].symbol} class='link'> ${tokens[i].name} </a>`;
+      c.innerHTML = `<a href=/projects/${tokens[i].symbol} class='link'> ${tokens[i].name} </a>`;
 
       c1.innerHTML = tokens[i].symbol;
       
@@ -144,10 +150,20 @@ async function displayMovers() {
         c3.innerHTML = (tokens[i].metrics.percent_change_usd_last_24_hours > 0) ? ('+' + tokens[i].metrics.percent_change_usd_last_24_hours + '%') : (tokens[i].metrics.percent_change_usd_last_24_hours + '%');
       }
       
-        if (typeof tokens[i].metrics.percent_change_last_1_month === 'undefined') {c4.innerHTML = 'no data'}
+      if (typeof tokens[i].metrics.percent_change_last_1_month === 'undefined') {c4.innerHTML = 'no data'}
       else {
         c4.innerHTML = (tokens[i].metrics.percent_change_last_1_month > 0) ? ('+' + tokens[i].metrics.percent_change_last_1_month + '%') : (tokens[i].metrics.percent_change_last_1_month + '%');
-      }
+    }
+        // if (tokens[i].metrics.addresses_balance_greater_10_usd_count){
+        //   c5.innerHTML = tokens[i].metrics.addresses_balance_greater_10_usd_count;
+        // }
+        // else {
+        //   c5.innerHTML = 'no data';
+        // }
+        
+
+        
+    
       
       
       
@@ -160,7 +176,7 @@ async function displayMovers() {
   }
 
   else {
-    document.getElementById('movers').innerHTML = "No big moves today";
+    document.getElementById('watchlist').innerHTML = "No big moves today";
   }
   
 }

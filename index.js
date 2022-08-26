@@ -6,147 +6,183 @@ const mySecret = process.env['messari-api-key'];
 const tokens = [
   {
     name: "Bitcoin",
-    symbol: "btc"
+    symbol: "btc",
+    slug: "bitcoin"
   },
   {
     name: 'Ethereum',
-    symbol: "eth"
+    symbol: "eth",
+    slug: "ethereum"
   },
   {
     name: 'Solana',
-    symbol: "sol"
+    symbol: "sol",
+    slug: "solana"
   },
   {
     name: 'LidoDAO',
-    symbol: "ldo"
+    symbol: "ldo",
+    slug: "lido-dao"
   },
   {
     name: 'Polygon', 
-    symbol: "matic"
+    symbol: "matic",
+    slug: "matic-network"
   },
   {
     name: 'Uniswap',
-    symbol: "uni"
+    symbol: "uni",
+    slug: "uniswap"
   },
   {
     name: "Sushiswap",
-    symbol: "sushi"
+    symbol: "sushi",
+    slug: "sushi"
   },
   {
     name:"Curve",
-    symbol: "crv"
+    symbol: "crv",
+    slug: "curve"
   },
   {
     name: "Synthetix",
-    symbol: "synthetix"
+    symbol: "synthetix",
+    slug: "synthetix"
   },
   {
     name: "ChainLink",
-    symbol: "link"
+    symbol: "link",
+    slug: "chainlink"
   },
   {
     name: "Cosmos",
-    symbol: "atom"
+    symbol: "atom",
+    slug: "cosmos"
   },
   {
     name: "0x",
-    symbol: "zrx"
+    symbol: "zrx",
+    slug: "0x"
   },
   {
     name: "API3",
-    symbol: "api3"
+    symbol: "api3",
+    slug: "api3"
   },
   {
     name: "Cube Network",
-    symbol: "cube"
+    symbol: "cube",
+    slug: "cube-network"
   },
   {
     name: "NFT Exchange",
-    symbol: "nftx"
+    symbol: "nftx",
+    slug: "nftx"
   },
   {
     name: "Binance Smart Chain",
-    symbol: "bnb"
+    symbol: "bnb",
+    slug: "binance-coin"
   }, 
   {
     name: "Helium",
-    symbol: "hnt"
+    symbol: "hnt",
+    slug: "helium"
   },
   {
     name: "Maker",
-    symbol: "mkr"
+    symbol: "mkr",
+    slug: "maker"
   },
   {
     name: "The Graph",
-    symbol: "grt"
+    symbol: "grt",
+    slug: "the-graph"
   },
   {
     name: "Arweave",
-    symbol: "ar"
+    symbol: "ar",
+    slug: "arweave"
   },
   {
     name: "Compound",
-    symbol: "comp"
+    symbol: "comp",
+    slug: "compound"
   },
   {
     name: "Osmosis",
-    symbol: "osmo"
+    symbol: "osmo",
+    slug: "osmosis"
   },
   {
-    name: "Ethereum Name Services",
-    symbol: "ens"
+    name: "Ethereum Name Service",
+    symbol: "ens",
+    slug: "ethereum-name-service"
   },
   {
-    name: "Handshake Name Services",
-    symbol: "hns"
+    name: "Handshake Name Service",
+    symbol: "hns",
+    slug: "handshake"
   },
   {
     name: "LooksRare",
-    symbol: "looks"
+    symbol: "looks",
+    slug: "looksrare"
   },
   {
     name: "Yearn Finance",
-    symbol: "yfi"
+    symbol: "yfi",
+    slug: "yearn-finance"
   },
   {
-    name: "Mina Protocol",
-    symbol: "mina"
+    name: "Mina",
+    symbol: "mina",
+    slug: "mina"
   },
   {
     name: "Liquity",
-    symbol: "lqty"
+    symbol: "lqty",
+    slug: "liquity"
   },
   {
     name: "Perpetual Protocol V2",
-    symbol: "perp"
+    symbol: "perp",
+    slug: "perpetual-protocol"
   },
   {
     name: "GMX",
-    symbol: "gmx"
+    symbol: "gmx",
+    slug: "gmx"
   },
   {
     name: "Tracer DAO",
-    symbol: "tcr"
+    symbol: "tcr",
+    slug: "tracer-dao"
   },
   {
     name: "Orca",
-    symbol: "orca"
+    symbol: "orca",
+    slug: "orca"
   },
   {
     name: "Umami",
-    symbol: "umami"
+    symbol: "umami",
+    slug: "umami-finance"
   },
   {
     name: "Mango",
-    symbol: "mngo"
+    symbol: "mngo",
+    slug: "mango-markets"
   },
   {
     name: "Synapse",
-    symbol: "syn"
+    symbol: "syn",
+    slug: "synapse"
   },
   {
     name: "THORChain",
-    symbol: "thorchain"
+    symbol: "thorchain",
+    slug: "thorchain"
   }
 ]
 
@@ -166,7 +202,7 @@ import fs from 'fs';
 
 import csvWriter from 'csv-write-stream';
 
-import projectRouter from './routes/projects.js'
+//import projectRouter from './routes/projects.js'
 
 import path from 'path'
 
@@ -184,7 +220,7 @@ let dates = [];
 let values = [];
 
 const app = express();
-const router = express.Router();
+//const router = express.Router();
 
 
 app.listen(3000, () => {
@@ -192,12 +228,12 @@ app.listen(3000, () => {
 });
 
 //app.use(express.static(path.join(__dirname, 'public')));
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs')
+//app.set('views', path.join(__dirname, 'views'));
+//app.set('view engine', 'ejs')
 app.use(express.static('public'));
 app.use(express.static('historical_data'));
 app.use(express.json({limit : '1mb'}));
-app.use('/projects', projectRouter)
+//app.use('/projects', projectRouter)
 //app.use(express.static(path.join(__dirname, 'views')))
 
 
@@ -208,7 +244,11 @@ db.loadDatabase();
 //db.insert(tokens);
 
 app.get('/', (req, res) => {
-  res.render('index.html');
+  res.sendFile('index.html');
+})
+
+app.get('/projects/:symbol', (req, res) => {
+  res.sendFile(__dirname + '/public/charts.html');
 })
 
 app.get('/api', (request, response) => {
@@ -223,18 +263,8 @@ app.get('/api', (request, response) => {
 
 
 
-
-// router.get('/:symbol', async (req, res) => {
-//   // const tokenData = await db.find({symbol: req.params.symbol}, function (err, docs) {
-//   //   return docs;
-//   // });
-//   res.render('charts.html')
-//   //res.send(req.params.symbol)
-// })
-
-
 const historic = ["price_usd", "volume_last_24_hours", "txn_volume_last_24_hours_usd", "active_addresses", "addresses_balance_greater_10_usd_count"];
-// Updat CSVs 
+// Update CSVs 
 setInterval(function () {
   var all = null
   db.find({}, function (err, docs) {
@@ -272,7 +302,7 @@ function updateCSVs(data, cb) {
 
 
 
-
+// Append daily data to csv
 function append(sym, token, met) {
   //console.log(met);
   let parentPath = "public/historical_data/" + sym;
@@ -302,14 +332,12 @@ function append(sym, token, met) {
 
 // //db.persistence.compactDatafile
 
-// declare metrics array
 
 
 
 
 
-
-// Update database every 24h
+// Update database every 1h
 setInterval(
   async () => {
 
@@ -372,7 +400,7 @@ setInterval(
 
 // await updateAll();
 
-
+// Update a token's document in db
 function updateToken(sym, obj, today) {
   for (let key in obj) {
     if (obj[key]) {
@@ -388,7 +416,7 @@ function updateToken(sym, obj, today) {
 
 
 // console.log( await getTokenData("btc"));
-
+// Get the token's data from the fetched obj
 async function getTokenData(sym) {
   const data = await makeRequest(sym)
     .then(res => {
@@ -398,7 +426,7 @@ async function getTokenData(sym) {
   return data;
 }
 
-
+// Fetch a token's data from api
 function makeRequest(sym){    
   return new Promise(resolve => {
         let obj='';
