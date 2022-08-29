@@ -97,25 +97,9 @@ a:visited {
 </select></span>
           </div>
   </div>
-  
-   
-      <div id="price_usd1" class=child>
-        <canvas id="price_usd" ></canvas>
+
+      <div id="charts">
       </div>
-  
-      <div id="volume_last_24_hours1" class=child>
-        <canvas id="volume_last_24_hours"></canvas>
-      </div>
-      <div id="txn_volume_last_24_hours_usd1" class=child>
-        <canvas id="txn_volume_last_24_hours_usd"></canvas>
-      </div>
-      <div id="active_addresses1" class=child>
-        <canvas id="active_addresses"></canvas>
-      </div>
-      <div id="addresses_balance_greater_10_usd_count1" class=child>
-        <canvas id="addresses_balance_greater_10_usd_count">
-      </div>
-      
     
   </div>
 
@@ -136,6 +120,8 @@ a:visited {
 //alert(sym);
 let tokenName;
 let data; 
+
+const historic = ["users", 'tvl', "price_usd", "volume_last_24_hours", "txn_volume_last_24_hours_usd", "active_addresses", "addresses_balance_greater_10_usd_count"];
 
 // get db
 async function getDB() {
@@ -176,7 +162,7 @@ async function loadData() {
   info[sym] = {name: tokenName};
   document.getElementById('name').innerHTML = tokenName;
   // for each metric in metrics
-  for (let metric in metrics) {
+  for (let metric of historic) {
     
     
     let res;
@@ -302,11 +288,24 @@ async function makeChart() {
     await loadData();
     for (let metric in info[sym]) {
     if (metric !== 'name') {
+      let newDiv = document.createElement("div");
+        newDiv.setAttribute('id', metric + '1');
+      newDiv.setAttribute('class', 'child');
+      
+      document.getElementById('charts').appendChild(newDiv);
+      
+      let newCanvas = document.createElement("CANVAS");
+        newCanvas.setAttribute('id', metric);
+      
+          newDiv.appendChild(newCanvas);
+
+
+      
       let chart_data = assignChartData(metric, period);
   
       //if (!chartCreated) {
       metric_chart = new Chart(
-        document.getElementById(metric),
+        newCanvas,
         config_chart(chart_data)
       );
     }

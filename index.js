@@ -202,6 +202,12 @@ import fs from 'fs';
 
 import csvWriter from 'csv-write-stream';
 
+import csvParser from 'csv-parser';
+
+import schedule from 'node-schedule'
+
+// run everyday at midnight
+
 //import projectRouter from './routes/projects.js'
 
 import path from 'path'
@@ -262,16 +268,27 @@ app.get('/api', (request, response) => {
 });
 
 
-
-const historic = ["price_usd", "volume_last_24_hours", "txn_volume_last_24_hours_usd", "active_addresses", "addresses_balance_greater_10_usd_count"];
+const historic = ["users", 'tvl', "price_usd", "volume_last_24_hours", "txn_volume_last_24_hours_usd", "active_addresses", "addresses_balance_greater_10_usd_count"];
 // Update CSVs 
-setInterval(function () {
+
+const rule = new schedule.RecurrenceRule();
+rule.hour = 14;
+rule.second = 0;
+rule.minute = 0;
+
+rule.tz = 'America/New_York';
+
+schedule.scheduleJob(rule, () => {
+  runDailyUpdate();
+}) 
+
+function runDailyUpdate() {
   var all = null
   db.find({}, function (err, docs) {
     all = docs;
     updateCSVs(all, append);
   });
-}, 86400000)
+}
 
 
 function updateCSVs(data, cb) {
@@ -279,7 +296,7 @@ function updateCSVs(data, cb) {
   for (let token of data) {
   // get token symbol
     let sym = token.symbol;
-    //if (sym === 'api3') {
+    //if (sym === 'api3') { //
   // for each metric in metrics
       if (token.metrics) {
         for (let metric in token.metrics) {
@@ -294,7 +311,7 @@ function updateCSVs(data, cb) {
           }
         }
       }
-    //}
+    //} 
   }
   console.log('updated');
 }
@@ -306,7 +323,7 @@ function updateCSVs(data, cb) {
 function append(sym, token, met) {
   //console.log(met);
   let parentPath = "public/historical_data/" + sym;
-  let finalPathFile = "public/historical_data/" + sym + "/" + met + ".csv"
+  let finalPathFile = "public/historical_data/" + sym + "/" + met + ".csv";
   let today = new Date().toISOString().slice(0, 10);
   //let today = '2022-08-23';
   if (fs.existsSync(parentPath)) {
@@ -394,23 +411,141 @@ setInterval(
                 console.log('');
             }
 
-            updateToken(sym, obj, today);
+            updateToken(sym, obj, 'metrics');
         }
     }, 3600000);
 
 // await updateAll();
 
-// Update a token's document in db
-function updateToken(sym, obj, today) {
-  for (let key in obj) {
-    if (obj[key]) {
-      // let access_dates = `historical_data.${key}.dates`;
-      let access_values = `metrics.${key}`;
-      db.update({symbol: sym}, { $set: { [access_values]: obj[key] } }, {}, function () {
-       });
-    }  
+//loadHis();
+function loadHis() {
+  var all = null
+  db.find({}, function (err, docs) {
+    all = docs;
+    loadHistoricalData(all, updateToken);
+  });
+}
+
+
+async function loadHistoricalData(db, cb) {
+  for (let tokenObj of db) {
+    const info = {};
+    const sym = tokenObj.symbol;
+    // Get metrics if available
+    let metrics;
+    try {
+      metrics = tokenObj.metrics;
+    }
+    catch {
+      console.log('no metrics for: ' + sym);
+    }
+
+
+      // for each metric in metrics
+    for (let metric of historic) {
+      info[metric] = [];
+      let path = "public/historical_data/" + sym + "/" + metric + ".csv";
+      //console.log(path);
+      try {
+        if (fs.existsSync(path)) {
+        
+          fs.createReadStream(path)
+          .pipe(csvParser({}))
+          .on('data', (data) => {
+            
+            info[metric].push(data);
+          })
+          .on('end', () => {
+            //console.log(info[metric])
+          });
+        }
+        else{
+          console.log('')
+        }
+      
+      }
+      catch {
+        console.log('no data for ' + sym + ' ' + metric);
+      }
+  }
+    //console.log(info);
+    //cb(sym, info, 'historical_data');
   }
 }
+
+
+// async function loadHistoricalData(db, cb) {
+//   for (let tokenObj of db) {
+//     const info = {};
+//     const sym = tokenObj.symbol;
+//     // Get metrics if available
+//     let metrics;
+//     try {
+//       metrics = tokenObj.metrics;
+//     }
+//     catch {
+//       console.log('no metrics for: ' + sym);
+//     }
+
+
+//       // for each metric in metrics
+//     for (let metric in metrics) {
+
+      
+//       let res;
+//       try {
+//         res = await fetch("./historical_data/" + sym + "/" + metric + ".csv");
+      
+//       //console.log(metric);
+//       const text = await res.text();
+//         console.log(text);
+//     // historical_data_btc.csv
+    
+//       const first = text.split('\n').slice(0, 1);
+//       const table = text.split('\n').slice(1);
+//       //console.log(rows);
+//       const firstRow = first.toString().split(',');
+    
+//       info[metric] = {};
+      
+//       // for each colomn
+//       for (let i = 0; i < firstRow.length; i++) {
+//         let title = firstRow[i].replaceAll('"', '');
+//         info[metric][title] = [];
+        
+//         // for each row
+//         for (let j = 0; j < table.length; j++) {
+//           const row = table[j].split(',');
+//           info[metric][title].push(row[i].replaceAll('"', ''));
+//         }
+//       }
+    
+//     }
+//     catch {
+//       console.log('');
+//     }
+//   }
+//     console.log(info);
+//     //cb(sym, info, 'historical_data');
+//   }
+// }
+
+
+
+
+  
+  
+  // Update a token's document in db
+  function updateToken(sym, obj, category) {
+    for (let key in obj) {
+      if (obj[key]) {
+        // let access_dates = `historical_data.${key}.dates`;
+        let access_values = `${category}.${key}`;
+        db.update({symbol: sym}, { $set: { [access_values]: obj[key] } }, {}, function () {
+         });
+      }  
+    }
+  }
 
 
 
