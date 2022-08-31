@@ -1,9 +1,12 @@
 // Get daily data from database
+
+
 async function getDB() {
   const res = await fetch('/api');
   const data = await res.json();
   return data;
 }
+
 
 
 async function displayTables() {
@@ -26,14 +29,14 @@ async function displayTables() {
 async function changeCriterion(crit) {
   let tokens = await getDB();
   const projectsWithUsersData = ['uni', 'ens', 'looks', 'matic', 'zrx']
-  const translate = {'Price': 'price_usd', 'Price Change 24h':'percent_change_usd_last_24_hours', 'Price Change 1M':'percent_change_last_1_month', 'Users': 'users_count', 'Users Change 3M': 'users_percent_change_3m'}
+  const translate = {'Price': 'price_usd', 'Price Change 24h':'percent_change_usd_last_24_hours', 'Price Change 1M':'percent_change_last_1_month', 'Daily Users': 'users_count', 'Users Change 3M': 'users_percent_change_3m'}
   
   let criterionRaw = crit.innerHTML;
   console.log(criterionRaw);
 
   let criterion = translate[criterionRaw];
   console.log(criterion);
-  if (criterionRaw === 'Users' || criterionRaw === 'Users Change 3M') {
+  if (criterionRaw === 'Daily Users' || criterionRaw === 'Users Change 3M') {
     const dapps = await populateDapps(projectsWithUsersData, tokens);
     let sortedTokens = sortTokens(dapps, criterion);
     makeDappsTable(dapps, sortedTokens);
@@ -97,7 +100,7 @@ async function makeDappsTable(dapps) {
   cell.innerHTML = "<b>Rank</b>"
   cell1.innerHTML = "<b>Name</b>"
   cell2.innerHTML = "<b>Category</b>";
-  cell3.innerHTML = "<b onclick='changeCriterion(this)' class='crit'>Users</b>";
+  cell3.innerHTML = "<b onclick='changeCriterion(this)' class='crit'>Daily Users</b>";
   cell4.innerHTML = "<b onclick='changeCriterion(this)' class='crit'>Users Change 3M</b>";
   
     
@@ -294,6 +297,7 @@ async function displayWatchlist(tokens) {
     var cell3 = row.insertCell(3);
     var cell4 = row.insertCell(4);
     var cell5 = row.insertCell(5);
+    var cell6 = row.insertCell(6);
     cell.innerHTML = "<b>Rank</b>"
     cell1.innerHTML = "<b>Token</b>"
     cell2.innerHTML = "<b>Symbol</b>";
@@ -302,7 +306,7 @@ async function displayWatchlist(tokens) {
     // cell4.innerHTML = "<b>Volume Change vs Average</b>";
     cell5.innerHTML = "<b onclick='changeCriterion(this)' class='crit'>Price Change 1M</b>";
     // cell5.innerHTML = "<b>Wallets Holding > $10</b>";
-
+    cell6.innerHTML = "<b onclick='changeCriterion(this)' class='crit'>Return Since Launch</b>";
 
 
 
@@ -311,7 +315,7 @@ async function displayWatchlist(tokens) {
   
     for (var i = 0; i < tokens.length; i++) {
 
-      if (tokens[i].metrics) {
+      if (tokens[i].metrics.price_usd) {
         
       var tr = document.createElement('TR');
       tableBody.appendChild(tr);
@@ -325,6 +329,7 @@ async function displayWatchlist(tokens) {
       var c3 = r.insertCell(3);
       var c4 = r.insertCell(4);
       var c5 = r.insertCell(5);
+      var c6 = r.insertCell(6);
       // Add some text to the new cells:
 
       c.innerHTML = 36 - i;
@@ -345,7 +350,17 @@ async function displayWatchlist(tokens) {
       else {
         c5.innerHTML = (tokens[i].metrics.percent_change_last_1_month <= 0) ? 
 (`<span style='color:FireBrick'> ${tokens[i].metrics.percent_change_last_1_month}% </span>`) : (`<span style='color:green'> +${tokens[i].metrics.percent_change_last_1_month}% </span>`);
-    }
+      }
+
+      if (typeof tokens[i].metrics.launch_price === 'undefined') {c6.innerHTML = 'no data'}
+      else {
+        let launchPrice = tokens[i].metrics.launch_price;
+        
+        let change = Math.round(((Number(tokens[i].metrics.price_usd) / launchPrice) - 1 ) * 100); 
+        c6.innerHTML = (change <= 0) ? 
+(`<span style='color:FireBrick'> ${change}% </span>`) : (`<span style='color:green'> +${change}% </span>`);
+      }
+        
         // if (tokens[i].metrics.addresses_balance_greater_10_usd_count){
         //   c5.innerHTML = tokens[i].metrics.addresses_balance_greater_10_usd_count;
         // }

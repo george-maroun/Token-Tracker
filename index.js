@@ -8,216 +8,252 @@ const tokens = [
     name: "Bitcoin",
     symbol: "btc",
     slug: "bitcoin",
+    cg_slug: "bitcoin",
     sector: "layer-1"
   },
   {
     name: 'Ethereum',
     symbol: "eth",
     slug: "ethereum",
+    cg_slug: "ethereum",
     sector: "layer-1"
   },
   {
     name: 'Solana',
     symbol: "sol",
     slug: "solana",
+    cg_slug: "solana",
     sector: "layer-1"
   },
   {
     name: 'LidoDAO',
     symbol: "ldo",
     slug: "lido-dao",
+    cg_slug: "lido-dao",
     sector: "DeFi"
   },
   {
     name: 'Polygon', 
     symbol: "matic",
     slug: "matic-network",
+    cg_slug: "matic-network",
     sector: "Layer-2"
   },
   {
     name: 'Uniswap',
     symbol: "uni",
     slug: "uniswap",
+    cg_slug: "uniswap",
     sector: "DeFi"
   },
   {
     name: "Sushiswap",
     symbol: "sushi",
     slug: "sushi",
+    cg_slug: "sushi",
     sector: "DeFi"
   },
   {
     name:"Curve",
     symbol: "crv",
     slug: "curve",
+    cg_slug: "curve-dao-token",
     sector: "De-Fi"
   },
   {
     name: "Synthetix",
     symbol: "synthetix",
     slug: "synthetix",
+    cg_slug: "havven",
     sector: "DeFi"
   },
   {
     name: "ChainLink",
     symbol: "link",
     slug: "chainlink",
+    cg_slug: "chainlink",
     sector: "Data"
   },
   {
     name: "Cosmos",
     symbol: "atom",
     slug: "cosmos",
+    cg_slug: "cosmos",
     sector: "layer-1"
   },
   {
     name: "0x",
     symbol: "zrx",
     slug: "0x",
+    cg_slug: "0x",
     sector: "Data"
   },
   {
     name: "API3",
     symbol: "api3",
     slug: "api3",
+    cg_slug: "api3",
     sector: "Data"
   },
   {
     name: "Cube Network",
     symbol: "cube",
     slug: "cube-network",
+    cg_slug: "cube-network",
     sector: "layer-1"
   },
   {
     name: "NFT Exchange",
     symbol: "nftx",
     slug: "nftx",
+    cg_slug: "nftx",
     sector: "NFTs"
   },
   {
-    name: "Binance Smart Chain",
+    name: "BNB",
     symbol: "bnb",
     slug: "binance-coin",
+    cg_slug: "binancecoin",
     sector: "layer-1"
   }, 
   {
     name: "Helium",
     symbol: "hnt",
     slug: "helium",
+    cg_slug: "helium",
     sector: "Real World"
   },
   {
     name: "Maker",
     symbol: "mkr",
     slug: "maker",
+    cg_slug: "maker",
     sector: "DeFi"
   },
   {
     name: "The Graph",
     symbol: "grt",
     slug: "the-graph",
+    cg_slug: "the-graph",
     sector: "Data"
   },
   {
     name: "Arweave",
     symbol: "ar",
     slug: "arweave",
+    cg_slug: "arweave",
     sector: "Data"
   },
   {
     name: "Compound",
     symbol: "comp",
     slug: "compound",
+    cg_slug: "compound-governance-token",
     sector: "DeFi"
   },
   {
     name: "Osmosis",
     symbol: "osmo",
     slug: "osmosis",
+    cg_slug: "osmosis",
     sector: "DeFi"
   },
   {
     name: "Ethereum Name Service",
     symbol: "ens",
     slug: "ethereum-name-service",
+    cg_slug: "ethereum-name-service",
     sector: "Other"
   },
   {
     name: "Handshake Name Service",
     symbol: "hns",
     slug: "handshake",
+    cg_slug: "handshake",
     sector: "Other"
   },
   {
     name: "LooksRare",
     symbol: "looks",
     slug: "looksrare",
+    cg_slug: "looksrare",
     sector: "NFTs"
   },
   {
     name: "Yearn Finance",
     symbol: "yfi",
     slug: "yearn-finance",
+    cg_slug: "yearn-finance",
     sector: "DeFi"
   },
   {
     name: "Mina",
     symbol: "mina",
     slug: "mina",
+    cg_slug: "mina-protocol",
     sector: "layer-1"
   },
   {
     name: "Liquity",
     symbol: "lqty",
     slug: "liquity",
+    cg_slug: "liquity",
     sector: "DeFi"
   },
   {
     name: "Perpetual Protocol V2",
     symbol: "perp",
     slug: "perpetual-protocol",
+    cg_slug: "perpetual-protocol",
     sector: "layer-1"
   },
   {
     name: "GMX",
     symbol: "gmx",
     slug: "gmx",
+    cg_slug: "gmx",
     sector: "DeFi"
   },
   {
     name: "Tracer DAO",
     symbol: "tcr",
     slug: "tracer-dao",
+    cg_slug: "tracer-dao",
     sector: "Other"
   },
   {
     name: "Orca",
     symbol: "orca",
     slug: "orca",
+    cg_slug: "orca",
     sector: "DeFi"
   },
   {
     name: "Umami",
     symbol: "umami",
     slug: "umami-finance",
+    cg_slug: "umami-finance",
     sector: "Other"
   },
   {
     name: "Mango",
     symbol: "mngo",
     slug: "mango-markets",
+    cg_slug: "mango-markets",
     sector: "Other"
   },
   {
     name: "Synapse",
     symbol: "syn",
     slug: "synapse",
+    cg_slug: "synapse-2",
     sector: "Other"
   },
   {
     name: "THORChain",
     symbol: "thorchain",
     slug: "thorchain",
+    cg_slug: "thorchain",
     sector: "DeFi"
   }
 ]
@@ -396,7 +432,9 @@ setInterval(
 
         let today = new Date().toISOString().slice(0, 10);
         // For each token in the obj
+        let counter = 0;
         for (let token of tokens) {
+            counter++;
             // set interval
             let sym = token.symbol;
 
@@ -418,14 +456,14 @@ setInterval(
                 obj["volume_last_24_hours"] = data.market_data["volume_last_24_hours"].toLocaleString().replaceAll(',', '');
             }
             catch {
-                console.log(token.name + ': no price and volume');
+                console.log('');
             }
 
             try {
                 obj["percent_change_usd_last_24_hours"] = data.market_data["percent_change_usd_last_24_hours"].toLocaleString().replaceAll(',', '');   
             }
             catch {
-                console.log(token.name + ': no % change in price');
+                console.log('');
             }
 
             try {
@@ -435,7 +473,7 @@ setInterval(
               obj["percent_change_last_1_year"] = data.roi_data["percent_change_last_1_year"].toLocaleString().replaceAll(',', '');   
             }
             catch {
-                console.log(token.name + ': no roi data');
+                console.log('');
             }
           
             try {
@@ -447,11 +485,28 @@ setInterval(
                 console.log('');
             }
 
+    //       if (counter > 20) {
+  
+          try {
+            obj["launch_price"] = await fetch("https://api.coingecko.com/api/v3/coins/" +  token.cg_slug + "/history?date=01-07-2022/")
+    .then((response) => response.json())
+    .then(data => {
+        return data.market_data.current_price.usd;
+    })
+          }
+          catch {
+            console.log('no launch price for ' + token.name)
+          }
+    //       }
+          if (counter < 20) {
             updateToken(sym, obj, 'metrics');
+          }
+            
         }
-    }, 3600000);
+    }, 36000000);
 
-// await updateAll();
+
+// console.log(launchp);
 
 //loadHis();
 function loadHis() {
