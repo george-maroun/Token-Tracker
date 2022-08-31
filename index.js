@@ -7,182 +7,218 @@ const tokens = [
   {
     name: "Bitcoin",
     symbol: "btc",
-    slug: "bitcoin"
+    slug: "bitcoin",
+    sector: "layer-1"
   },
   {
     name: 'Ethereum',
     symbol: "eth",
-    slug: "ethereum"
+    slug: "ethereum",
+    sector: "layer-1"
   },
   {
     name: 'Solana',
     symbol: "sol",
-    slug: "solana"
+    slug: "solana",
+    sector: "layer-1"
   },
   {
     name: 'LidoDAO',
     symbol: "ldo",
-    slug: "lido-dao"
+    slug: "lido-dao",
+    sector: "DeFi"
   },
   {
     name: 'Polygon', 
     symbol: "matic",
-    slug: "matic-network"
+    slug: "matic-network",
+    sector: "Layer-2"
   },
   {
     name: 'Uniswap',
     symbol: "uni",
-    slug: "uniswap"
+    slug: "uniswap",
+    sector: "DeFi"
   },
   {
     name: "Sushiswap",
     symbol: "sushi",
-    slug: "sushi"
+    slug: "sushi",
+    sector: "DeFi"
   },
   {
     name:"Curve",
     symbol: "crv",
-    slug: "curve"
+    slug: "curve",
+    sector: "De-Fi"
   },
   {
     name: "Synthetix",
     symbol: "synthetix",
-    slug: "synthetix"
+    slug: "synthetix",
+    sector: "DeFi"
   },
   {
     name: "ChainLink",
     symbol: "link",
-    slug: "chainlink"
+    slug: "chainlink",
+    sector: "Data"
   },
   {
     name: "Cosmos",
     symbol: "atom",
-    slug: "cosmos"
+    slug: "cosmos",
+    sector: "layer-1"
   },
   {
     name: "0x",
     symbol: "zrx",
-    slug: "0x"
+    slug: "0x",
+    sector: "Data"
   },
   {
     name: "API3",
     symbol: "api3",
-    slug: "api3"
+    slug: "api3",
+    sector: "Data"
   },
   {
     name: "Cube Network",
     symbol: "cube",
-    slug: "cube-network"
+    slug: "cube-network",
+    sector: "layer-1"
   },
   {
     name: "NFT Exchange",
     symbol: "nftx",
-    slug: "nftx"
+    slug: "nftx",
+    sector: "NFTs"
   },
   {
     name: "Binance Smart Chain",
     symbol: "bnb",
-    slug: "binance-coin"
+    slug: "binance-coin",
+    sector: "layer-1"
   }, 
   {
     name: "Helium",
     symbol: "hnt",
-    slug: "helium"
+    slug: "helium",
+    sector: "Real World"
   },
   {
     name: "Maker",
     symbol: "mkr",
-    slug: "maker"
+    slug: "maker",
+    sector: "DeFi"
   },
   {
     name: "The Graph",
     symbol: "grt",
-    slug: "the-graph"
+    slug: "the-graph",
+    sector: "Data"
   },
   {
     name: "Arweave",
     symbol: "ar",
-    slug: "arweave"
+    slug: "arweave",
+    sector: "Data"
   },
   {
     name: "Compound",
     symbol: "comp",
-    slug: "compound"
+    slug: "compound",
+    sector: "DeFi"
   },
   {
     name: "Osmosis",
     symbol: "osmo",
-    slug: "osmosis"
+    slug: "osmosis",
+    sector: "DeFi"
   },
   {
     name: "Ethereum Name Service",
     symbol: "ens",
-    slug: "ethereum-name-service"
+    slug: "ethereum-name-service",
+    sector: "Other"
   },
   {
     name: "Handshake Name Service",
     symbol: "hns",
-    slug: "handshake"
+    slug: "handshake",
+    sector: "Other"
   },
   {
     name: "LooksRare",
     symbol: "looks",
-    slug: "looksrare"
+    slug: "looksrare",
+    sector: "NFTs"
   },
   {
     name: "Yearn Finance",
     symbol: "yfi",
-    slug: "yearn-finance"
+    slug: "yearn-finance",
+    sector: "DeFi"
   },
   {
     name: "Mina",
     symbol: "mina",
-    slug: "mina"
+    slug: "mina",
+    sector: "layer-1"
   },
   {
     name: "Liquity",
     symbol: "lqty",
-    slug: "liquity"
+    slug: "liquity",
+    sector: "DeFi"
   },
   {
     name: "Perpetual Protocol V2",
     symbol: "perp",
-    slug: "perpetual-protocol"
+    slug: "perpetual-protocol",
+    sector: "layer-1"
   },
   {
     name: "GMX",
     symbol: "gmx",
-    slug: "gmx"
+    slug: "gmx",
+    sector: "DeFi"
   },
   {
     name: "Tracer DAO",
     symbol: "tcr",
-    slug: "tracer-dao"
+    slug: "tracer-dao",
+    sector: "Other"
   },
   {
     name: "Orca",
     symbol: "orca",
-    slug: "orca"
+    slug: "orca",
+    sector: "DeFi"
   },
   {
     name: "Umami",
     symbol: "umami",
-    slug: "umami-finance"
+    slug: "umami-finance",
+    sector: "Other"
   },
   {
     name: "Mango",
     symbol: "mngo",
-    slug: "mango-markets"
+    slug: "mango-markets",
+    sector: "Other"
   },
   {
     name: "Synapse",
     symbol: "syn",
-    slug: "synapse"
+    slug: "synapse",
+    sector: "Other"
   },
   {
     name: "THORChain",
     symbol: "thorchain",
-    slug: "thorchain"
+    slug: "thorchain",
+    sector: "DeFi"
   }
 ]
 

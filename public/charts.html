@@ -41,6 +41,7 @@ body {
 table, tr, td {
   border-collapse: collapse;
   border: 1px solid !important;
+  padding: 4px;
 }
 
 
@@ -282,6 +283,7 @@ function getPeriod() {
 
 async function makeChart() {
 
+  
   let period = getPeriod();
 
   if (!info[sym]) {
@@ -383,24 +385,27 @@ async function makeTable() {
       }
       else if (el.includes('percent')) {
         if (Number(obj.metrics[el]) > 0) {
-          c1.innerHTML = '+' + obj.metrics[el] + '%';
+          c1.innerHTML = `<span style="color:green"> +${obj.metrics[el]}% </span>`;
         }
         else {
-          c1.innerHTML = obj.metrics[el] + '%';
+          c1.innerHTML = `<span style="color:FireBrick"> ${obj.metrics[el]}%</span>`;
         }
       }
       else {
         c1.innerHTML = obj.metrics[el];
       }
     }
-     table.className = 'table_styling';
-     myTable.appendChild(table);
+    table.className = 'table_styling';
+
+    myTable.innerHTML = ''
+    myTable.appendChild(table);
   
 }
 
 
 
 async function displayStats() {
+  document.getElementById('statsTable').innerHTML = 'loading data...';
   await makeChart();
   makeTable();
 }

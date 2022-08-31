@@ -32,6 +32,7 @@ body {
 table, tr, td {
   border-collapse: collapse;
   border: 1px solid !important;
+  padding: 4px;
 }
 
 
@@ -55,4 +56,8 @@ a:hover {
 
 a:visited { 
  color: black; 
+}
+
+.crit:hover {
+    text-decoration: underline;
 }
