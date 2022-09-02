@@ -29,7 +29,7 @@ async function displayTables() {
 async function changeCriterion(crit) {
   let tokens = await getDB();
   const projectsWithUsersData = ['uni', 'ens', 'looks', 'matic', 'zrx']
-  const translate = {'Price': 'price_usd', 'Price Change 24h':'percent_change_usd_last_24_hours', 'Price Change 1M':'percent_change_last_1_month', 'Daily Users': 'users_count', 'Users Change 3M': 'users_percent_change_3m'}
+  const translate = {'Price': 'price_usd', 'Price Change 24h':'percent_change_usd_last_24_hours', 'Price Change 1M':'percent_change_last_1_month', 'Daily Users': 'users_count', 'Users Change 3M': 'users_percent_change_3m', 'Return Since Launch':'return_since_launch'}
   
   let criterionRaw = crit.innerHTML;
   console.log(criterionRaw);
@@ -45,7 +45,7 @@ async function changeCriterion(crit) {
     let sortedTokens = sortTokens(tokens, criterion);
     displayWatchlist(sortedTokens);
   }
-  crit.style.textDecoration = "underline";
+  crit.style.textDecoration = "underline !important";
 }
 
 
@@ -332,7 +332,7 @@ async function displayWatchlist(tokens) {
       var c6 = r.insertCell(6);
       // Add some text to the new cells:
 
-      c.innerHTML = 36 - i;
+      c.innerHTML = tokens.length - i;
         
       c1.innerHTML = `<a href=/projects/${tokens[i].symbol} class='link'> ${tokens[i].name} </a>`;
 
@@ -354,11 +354,11 @@ async function displayWatchlist(tokens) {
 
       if (typeof tokens[i].metrics.launch_price === 'undefined') {c6.innerHTML = 'no data'}
       else {
-        let launchPrice = tokens[i].metrics.launch_price;
+        //let launchPrice = tokens[i].metrics.launch_price;
         
-        let change = Math.round(((Number(tokens[i].metrics.price_usd) / launchPrice) - 1 ) * 100); 
-        c6.innerHTML = (change <= 0) ? 
-(`<span style='color:FireBrick'> ${change}% </span>`) : (`<span style='color:green'> +${change}% </span>`);
+        // let change = Math.round(((Number(tokens[i].metrics.price_usd) / launchPrice) - 1 ) * 100); 
+        c6.innerHTML = (tokens[i].metrics.return_since_launch <= 0) ? 
+(`<span style='color:FireBrick'> ${tokens[i].metrics.return_since_launch}% </span>`) : (`<span style='color:green'> +${tokens[i].metrics.return_since_launch}% </span>`);
       }
         
         // if (tokens[i].metrics.addresses_balance_greater_10_usd_count){

@@ -8,12 +8,13 @@
 <!--   <link href="style.css" rel="stylesheet" type="text/css" /> -->
   <style>
     html, body {
-  height: 100%;
-  width: 98%;
-}
+      height: 100%;
+      width: 98%;
+  }
 
 body {
   font-family: monospace;
+  font-size: 14px;
 }
 
 .main {
@@ -30,12 +31,23 @@ body {
 /* .chart {
   
 } */
+@media (min-width: 1176px) {
+  .child {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 3rem;
+    margin-bottom: 3rem;
+    width: 540px;
+  }
+}
 
-.child {
-  display: inline-block;
-  vertical-align: middle;
-  padding: 1rem;
-  width: 45%;
+@media (max-width: 1175px) {
+  .child {
+    display: inline-block;
+    vertical-align: middle;
+    margin-bottom: 3rem;
+    width: 100%;
+  }
 }
 
 table, tr, td {
@@ -383,7 +395,7 @@ async function makeTable() {
       if (el === 'price_usd') {
         c1.innerHTML = '$' + obj.metrics[el];
       }
-      else if (el.includes('percent')) {
+      else if (el.includes('percent') || el.includes('return')) {
         if (Number(obj.metrics[el]) > 0) {
           c1.innerHTML = `<span style="color:green"> +${obj.metrics[el]}% </span>`;
         }

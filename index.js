@@ -151,13 +151,13 @@ const tokens = [
     cg_slug: "compound-governance-token",
     sector: "DeFi"
   },
-  {
-    name: "Osmosis",
-    symbol: "osmo",
-    slug: "osmosis",
-    cg_slug: "osmosis",
-    sector: "DeFi"
-  },
+  // {
+  //   name: "Osmosis",
+  //   symbol: "osmo",
+  //   slug: "osmosis",
+  //   cg_slug: "osmosis",
+  //   sector: "DeFi"
+  // },
   {
     name: "Ethereum Name Service",
     symbol: "ens",
@@ -221,13 +221,13 @@ const tokens = [
     cg_slug: "tracer-dao",
     sector: "Other"
   },
-  {
-    name: "Orca",
-    symbol: "orca",
-    slug: "orca",
-    cg_slug: "orca",
-    sector: "DeFi"
-  },
+  // {
+  //   name: "Orca",
+  //   symbol: "orca",
+  //   slug: "orca",
+  //   cg_slug: "orca",
+  //   sector: "DeFi"
+  // },
   {
     name: "Umami",
     symbol: "umami",
@@ -340,7 +340,7 @@ app.get('/api', (request, response) => {
 });
 
 
-const historic = ["users", 'tvl', "price_usd", "volume_last_24_hours", "txn_volume_last_24_hours_usd", "active_addresses", "addresses_balance_greater_10_usd_count"];
+const historic = ["users", "tvl", "price_usd", "volume_last_24_hours", "txn_volume_last_24_hours_usd", "active_addresses", "addresses_balance_greater_10_usd_count"];
 // Update CSVs 
 
 const rule = new schedule.RecurrenceRule();
@@ -387,6 +387,11 @@ function updateCSVs(data, cb) {
   }
   console.log('updated');
 }
+
+// db.remove({ name: "Cube Network" }, {}, function (err, numRemoved) {
+//   if (err) {console.log(err)}
+//   console.log('removed');
+// });
 
 
 
@@ -487,23 +492,25 @@ setInterval(
 
     //       if (counter > 20) {
   
-          try {
-            obj["launch_price"] = await fetch("https://api.coingecko.com/api/v3/coins/" +  token.cg_slug + "/history?date=01-07-2022/")
-    .then((response) => response.json())
-    .then(data => {
-        return data.market_data.current_price.usd;
-    })
-          }
-          catch {
-            console.log('no launch price for ' + token.name)
-          }
+    //       try {
+    //         obj["launch_price"] = await fetch("https://api.coingecko.com/api/v3/coins/" +  token.cg_slug + "/history?date=01-07-2022/")
+    // .then((response) => response.json())
+    // .then(data => {
+    //     return data.market_data.current_price.usd;
+    // })
     //       }
-          if (counter < 20) {
+    //       catch {
+    //         console.log('no launch price for ' + token.name)
+    //       }
+    // //       }
+    //       if (counter < 20) {
+
+          
             updateToken(sym, obj, 'metrics');
-          }
+          //}
             
         }
-    }, 36000000);
+    }, 3600000);
 
 
 // console.log(launchp);
@@ -638,6 +645,19 @@ async function loadHistoricalData(db, cb) {
     }
   }
 
+function updateReturn() {
+  for (let token of tokens) {
+    db.find({ symbol: token.symbol }, function (err, docs) {
+      console.log(docs[0].metrics.launch_price);
+      let roi = Math.round(((Number(docs[0].metrics.price_usd) / docs[0].metrics.launch_price) - 1) * 100);
+      console.log(roi)
+      db.update({symbol: token.symbol}, { $set: { 'metrics.return_since_launch' : roi} }, {}, function () {
+           });
+      console.log(docs[0].metrics.return_since_launch);
+  });
+  }
+}
+setInterval(() => updateReturn(), 3600000);
 
 
 
