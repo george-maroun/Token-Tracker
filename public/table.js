@@ -8,20 +8,46 @@ async function getDB() {
 }
 
 
+function handleClick(navButton) {
+  let section = navButton.innerHTML;
+  document.getElementById('nav-watchlist').attributeStyleMap.clear();
+  document.getElementById('nav-dapps').attributeStyleMap.clear();
+  document.getElementById('nav-analysis').attributeStyleMap.clear();
+  navButton.style.fontSize = '22px';
+  navButton.style.fontWeight = 'bold';
+  displayTables(section);
+}
 
-async function displayTables() {
-  document.getElementById("dapps").innerHTML = 'loading data...'
+
+async function displayTables(section) {
+ console.log(section);
+  
   const projectsWithUsersData = ['uni', 'ens', 'looks', 'matic', 'zrx']
   let tokens = await getDB();
-  //console.log(tokens);
+  console.log(tokens);
   
   tokens = sortTokens(tokens, 'percent_change_last_1_month');
 
-  displayWatchlist(tokens);
-  let dapps = await populateDapps(projectsWithUsersData, tokens);
-  console.log(dapps);
-  sortedDapps = sortTokens(dapps, 'users_count');
-  makeDappsTable(sortedDapps, tokens);
+  if (section === 'Watchlist' || typeof section === 'undefined') {
+    let navWatchlist = document.getElementById('nav-watchlist');
+    navWatchlist.style.fontSize = '22px';
+    navWatchlist.style.fontWeight = 'bold';
+    document.getElementById('dapps').innerHTML = '';
+    displayWatchlist(tokens);
+  }
+  else if (section === 'DApps') {
+   document.getElementById('watchlist').innerHTML = ''; 
+    //document.getElementById("dapps").innerHTML = 'loading data...'
+    let dapps = await populateDapps(projectsWithUsersData, tokens);
+    console.log(dapps);
+    sortedDapps = sortTokens(dapps, 'users_count');
+    makeDappsTable(sortedDapps, tokens);
+  }
+  else if (section === 'Analysis') {
+   document.getElementById('watchlist').innerHTML = ''; 
+  document.getElementById('dapps').innerHTML = ''; 
+  
+  }
   //console.log(getUsers3M(dapps, 'uni'))
   
 }
@@ -82,9 +108,19 @@ function sortTokens(tokens, criterion) {
 
 async function makeDappsTable(dapps) {
  
-  var myTableDiv = document.getElementById("dapps");
+  var parent = document.getElementById("dapps");
 
+  var title = document.createElement('h2');
+
+  title.innerHTML = 'Users';
+
+  parent.appendChild(title);
+
+  var myTableDiv = document.createElement('div');
+
+  myTableDiv.innerHTML = 'loading data...'
   
+  parent.appendChild(myTableDiv);
 
   var table = document.createElement('TABLE');
   table.border = '1';
@@ -221,35 +257,10 @@ async function populateDapps(projects, all) {
 //
 
 
-// NOT USING
-// Calculate a token's past month avg volume
-async function getAvgVolume(token) {
-  let vol = await getPastMonthVol(token);
-  vol = vol.slice(0, 29);
-
-  //console.log('volumes ' + vol);
-  let sum = BigInt(0);
-  vol.forEach(el => {
-    sum += BigInt(Math.floor(el));
-  });
-  return sum/29n;
-}
-
-// NOT USING
-// Add average volume over last month to token obj
-async function populateVol() {
-  for (let token in tokens) {
-    let avg = await getAvgVolume(token);
-    tokens[token]["avg_vol"] = avg;
-  }
-  //console.log(tokens);
-}
-
-
 
 // Display watchlist table
 async function displayWatchlist(tokens) {
-  document.getElementById("watchlist").innerHTML = 'Loading data...';
+  //document.getElementById("watchlist").innerHTML = 'Loading data...';
   //let movers = await getTokensArr();
  
 
@@ -284,7 +295,17 @@ async function displayWatchlist(tokens) {
   console.log('length = ' + tokens.length);
   if (tokens.length > 0) {
 
-    var myTableDiv = document.getElementById("watchlist");
+    var parent = document.getElementById("watchlist");
+
+    var title = document.createElement('h2');
+
+    title.innerHTML = 'All tokens';
+  
+    parent.appendChild(title);
+  
+    var myTableDiv = document.createElement('div');
+    
+    parent.appendChild(myTableDiv);
 
     var table = document.createElement('TABLE');
     table.border = '1';
@@ -298,6 +319,7 @@ async function displayWatchlist(tokens) {
     var cell4 = row.insertCell(4);
     var cell5 = row.insertCell(5);
     var cell6 = row.insertCell(6);
+  
     cell.innerHTML = "<b>Rank</b>"
     cell1.innerHTML = "<b>Token</b>"
     cell2.innerHTML = "<b>Symbol</b>";

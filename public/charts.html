@@ -98,16 +98,17 @@ a:visited {
 
     <div style="overflow: hidden">
       <div style="float: left; margin-right: 1rem">
-    <h3 id="figs"></h3>
-        </div>
-          <div style="margin-top: 1rem;">
-    <span><select onchange="makeChart()" name="period" id="period" class="button">
-  <option value="1m">1M</option>
-  <option value="3m">3M</option>
-  <option value="6m">6M</option>
-  <option value="1y">1Y</option>
-     <option value="max">Max</option> 
-</select></span>
+    
+      </div>
+          <div id='chart-options' style="display:flex; align-items: center;">
+            <h3 id="figs" style="float:left; margin-right: 1rem"></h3>
+            <select onchange="makeChart()" name="period" id="period" class="button">
+          <option value="1m">1M</option>
+          <option value="3m">3M</option>
+          <option value="6m">6M</option>
+          <option value="1y">1Y</option>
+             <option value="max">Max</option> 
+        </select>
           </div>
   </div>
 

@@ -9,147 +9,187 @@ const tokens = [
     symbol: "btc",
     slug: "bitcoin",
     cg_slug: "bitcoin",
-    sector: "layer-1"
+    sector: "Layer-1",
+    'sub-sector': "Currency",
+    priority: 'M'
   },
   {
     name: 'Ethereum',
     symbol: "eth",
     slug: "ethereum",
     cg_slug: "ethereum",
-    sector: "layer-1"
+    sector: "Layer-1",
+    'sub-sector': "Smart-Contracts",
+    priority: 'H'
   },
   {
     name: 'Solana',
     symbol: "sol",
     slug: "solana",
     cg_slug: "solana",
-    sector: "layer-1"
+    sector: "Layer-1",
+    'sub-sector': "Smart-Contracts",
+    priority: 'H'
   },
   {
     name: 'LidoDAO',
     symbol: "ldo",
     slug: "lido-dao",
     cg_slug: "lido-dao",
-    sector: "DeFi"
+    sector: "DeFi",
+    'sub-sector': "Liquid Staking",
+    priority: 'H'
   },
   {
     name: 'Polygon', 
     symbol: "matic",
     slug: "matic-network",
     cg_slug: "matic-network",
-    sector: "Layer-2"
+    sector: "Layer-2",
+    'sub-sector': "ETH Scaling",
+    priority: 'H'
   },
   {
     name: 'Uniswap',
     symbol: "uni",
     slug: "uniswap",
     cg_slug: "uniswap",
-    sector: "DeFi"
+    sector: "DeFi",
+    'sub-sector': "DEX",
+    priority: 'H'
   },
   {
     name: "Sushiswap",
     symbol: "sushi",
     slug: "sushi",
     cg_slug: "sushi",
-    sector: "DeFi"
+    sector: "DeFi",
+    'sub-sector': "DEX",
+    priority: 'H'
   },
   {
     name:"Curve",
     symbol: "crv",
     slug: "curve",
     cg_slug: "curve-dao-token",
-    sector: "De-Fi"
+    sector: "DeFi",
+    'sub-sector': "DEX - Stablecoins",
+    priority: 'H'
   },
   {
     name: "Synthetix",
     symbol: "synthetix",
     slug: "synthetix",
     cg_slug: "havven",
-    sector: "DeFi"
+    sector: "DeFi",
+    'sub-sector': "Derivatives",
+    priority: 'M'
   },
   {
     name: "ChainLink",
     symbol: "link",
     slug: "chainlink",
     cg_slug: "chainlink",
-    sector: "Data"
+    sector: "Data",
+    'sub-sector': "Oracle",
+    priority: 'M'
   },
   {
     name: "Cosmos",
     symbol: "atom",
     slug: "cosmos",
     cg_slug: "cosmos",
-    sector: "layer-1"
+    sector: "Layer-1",
+    'sub-sector': "Multi-Chain",
+    priority: 'M'
   },
   {
     name: "0x",
     symbol: "zrx",
     slug: "0x",
     cg_slug: "0x",
-    sector: "Data"
+    sector: "Data",
+    'sub-sector': "Other",
+    priority: 'M'
   },
   {
     name: "API3",
     symbol: "api3",
     slug: "api3",
     cg_slug: "api3",
-    sector: "Data"
+    sector: "Data",
+    'sub-sector': "Other",
+    priority: 'M'
   },
-  {
-    name: "Cube Network",
-    symbol: "cube",
-    slug: "cube-network",
-    cg_slug: "cube-network",
-    sector: "layer-1"
-  },
+  // {
+  //   name: "Cube Network",
+  //   symbol: "cube",
+  //   slug: "cube-network",
+  //   cg_slug: "cube-network",
+  //   sector: "layer-1"
+  // },
   {
     name: "NFT Exchange",
     symbol: "nftx",
     slug: "nftx",
     cg_slug: "nftx",
-    sector: "NFTs"
+    sector: "NFTs",
+    'sub-sector': "NFT Liquidity",
+    priority: 'M'
   },
   {
     name: "BNB",
     symbol: "bnb",
     slug: "binance-coin",
     cg_slug: "binancecoin",
-    sector: "layer-1"
+    sector: "Layer-1",
+    'sub-sector': "Exchange",
+    priority: 'M'
   }, 
   {
     name: "Helium",
     symbol: "hnt",
     slug: "helium",
     cg_slug: "helium",
-    sector: "Real World"
+    sector: "Real World",
+    'sub-sector': "Telecom",
+    priority: 'L'
   },
   {
     name: "Maker",
     symbol: "mkr",
     slug: "maker",
     cg_slug: "maker",
-    sector: "DeFi"
+    sector: "DeFi",
+    'sub-sector': "Stablecoins",
+    priority: 'M'
   },
   {
     name: "The Graph",
     symbol: "grt",
     slug: "the-graph",
     cg_slug: "the-graph",
-    sector: "Data"
+    sector: "Data",
+    'sub-sector': "Data",
+    priority: 'M'
   },
   {
     name: "Arweave",
     symbol: "ar",
     slug: "arweave",
     cg_slug: "arweave",
-    sector: "Data"
+    sector: "Data",
+    'sub-sector': "Data",
+    priority: 'M'
   },
   {
     name: "Compound",
     symbol: "comp",
     slug: "compound",
     cg_slug: "compound-governance-token",
-    sector: "DeFi"
+    sector: "DeFi",
+    'sub-sector': "Lending",
+    priority: 'M'
   },
   // {
   //   name: "Osmosis",
@@ -163,63 +203,81 @@ const tokens = [
     symbol: "ens",
     slug: "ethereum-name-service",
     cg_slug: "ethereum-name-service",
-    sector: "Other"
+    sector: "Other",
+    'sub-sector': "Name Service",
+    priority: 'M'
   },
   {
     name: "Handshake Name Service",
     symbol: "hns",
     slug: "handshake",
     cg_slug: "handshake",
-    sector: "Other"
+    sector: "Other",
+    'sub-sector': "Name Service",
+    priority: 'M'
   },
   {
     name: "LooksRare",
     symbol: "looks",
     slug: "looksrare",
     cg_slug: "looksrare",
-    sector: "NFTs"
+    sector: "NFTs",
+    'sub-sector': "NFT Marketplace",
+    priority: 'M'
   },
   {
     name: "Yearn Finance",
     symbol: "yfi",
     slug: "yearn-finance",
     cg_slug: "yearn-finance",
-    sector: "DeFi"
+    sector: "DeFi",
+    'sub-sector': "Yield Aggregators",
+    priority: 'M'
   },
   {
     name: "Mina",
     symbol: "mina",
     slug: "mina",
     cg_slug: "mina-protocol",
-    sector: "layer-1"
+    sector: "Layer-1",
+    'sub-sector': "ZK-Focus",
+    priority: 'M'
   },
   {
     name: "Liquity",
     symbol: "lqty",
     slug: "liquity",
     cg_slug: "liquity",
-    sector: "DeFi"
+    sector: "DeFi",
+    'sub-sector': "Lending",
+    priority: 'L'
   },
   {
     name: "Perpetual Protocol V2",
     symbol: "perp",
     slug: "perpetual-protocol",
     cg_slug: "perpetual-protocol",
-    sector: "layer-1"
+    sector: "layer-1",
+    'sub-sector': "Perpetuals DEX",
+    priority: 'L'
   },
   {
     name: "GMX",
     symbol: "gmx",
     slug: "gmx",
     cg_slug: "gmx",
-    sector: "DeFi"
+    sector: "DeFi",
+    'sub-sector': "DEX",
+    priority: 'M'
   },
   {
     name: "Tracer DAO",
     symbol: "tcr",
     slug: "tracer-dao",
     cg_slug: "tracer-dao",
-    sector: "Other"
+    sector: "Other",
+    'sub-sector': "Derivatives",
+    priority: 'L'
   },
   // {
   //   name: "Orca",
@@ -233,29 +291,37 @@ const tokens = [
     symbol: "umami",
     slug: "umami-finance",
     cg_slug: "umami-finance",
-    sector: "Other"
+    sector: "DeFi",
+    'sub-sector': "lending",
+    priority: 'L'
   },
   {
     name: "Mango",
     symbol: "mngo",
     slug: "mango-markets",
     cg_slug: "mango-markets",
-    sector: "Other"
+    sector: "DeFi",
+    'sub-sector': "Financial services",
+    priority: 'L'
   },
   {
     name: "Synapse",
     symbol: "syn",
     slug: "synapse",
     cg_slug: "synapse-2",
-    sector: "Other"
+    sector: "Other",
+    'sub-sector': "Cross chain",
+    priority: 'L'
   },
   {
     name: "THORChain",
     symbol: "thorchain",
     slug: "thorchain",
     cg_slug: "thorchain",
-    sector: "DeFi"
-  }
+    sector: "DeFi",
+    'sub-sector': "DEX",
+    priority: 'L'
+  },
 ]
 
 
@@ -323,6 +389,10 @@ db.loadDatabase();
 
 app.get('/', (req, res) => {
   res.sendFile('index.html');
+})
+
+app.get('/dapps', (req, res) => {
+  res.sendFile('dapps.html');
 })
 
 app.get('/projects/:symbol', (req, res) => {
@@ -490,6 +560,19 @@ setInterval(
                 console.log('');
             }
 
+            try {
+              obj["tvl"] = await fetch("https://api.llama.fi/tvl/" + token.slug)
+    .then((response) => response.json())
+    .then(data => {
+        return data;
+    })
+              console.log('tvl obtained')
+            }
+          catch {
+            console.log('no tvl' + token.name);
+          }
+
+
     //       if (counter > 20) {
   
     //       try {
@@ -524,6 +607,17 @@ function loadHis() {
   });
 }
 
+
+
+
+
+// var tvl = await fetch("https://api.llama.fi/tvl/uniswap")
+//     .then((response) => response.json())
+//     .then(data => {
+//         return data;
+//     })
+
+// console.log(tvl);
 
 async function loadHistoricalData(db, cb) {
   for (let tokenObj of db) {
