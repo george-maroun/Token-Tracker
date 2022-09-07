@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width">
   <title>replit</title>
 <!--   <link href="style.css" rel="stylesheet" type="text/css" /> -->
+  
   <style>
     html, body {
       height: 100%;
@@ -26,6 +27,8 @@ body {
   font-family: monospace;
   border: 0px;
   outline:0px;
+  margin-top: 5px;
+  float:left;
 }
 
 /* .chart {
@@ -52,11 +55,10 @@ body {
 
 table, tr, td {
   border-collapse: collapse;
-  border: 1px solid !important;
-  padding: 4px;
+  border: 1px solid white; !important;
+  padding: 8px;
+  background: rgb(246, 246, 246);
 }
-
-
 
 .first_col {
   font-weight: bold; 
@@ -92,7 +94,7 @@ a:visited {
       <h1 id="name"></h1> 
     </div>
 
-    <h3 id="table_title"></h3>
+    <h2 id="table_title"></h2>
     
     <div id='statsTable'></div>
 
@@ -101,14 +103,14 @@ a:visited {
     
       </div>
           <div id='chart-options' style="display:flex; align-items: center;">
-            <h3 id="figs" style="float:left; margin-right: 1rem"></h3>
+            <h2 id="figs" style="float:left; margin-right: 1rem"></h2>
             <select onchange="makeChart()" name="period" id="period" class="button">
-          <option value="1m">1M</option>
-          <option value="3m">3M</option>
-          <option value="6m">6M</option>
-          <option value="1y">1Y</option>
-             <option value="max">Max</option> 
-        </select>
+              <option value="1m">1M</option>
+              <option value="3m">3M</option>
+              <option value="6m">6M</option>
+              <option value="1y">1Y</option>
+              <option value="max">Max</option> 
+            </select>
           </div>
   </div>
 
@@ -135,7 +137,7 @@ a:visited {
 let tokenName;
 let data; 
 
-const historic = ["users", 'tvl', "price_usd", "volume_last_24_hours", "txn_volume_last_24_hours_usd", "active_addresses", "addresses_balance_greater_10_usd_count"];
+const historic = ["users", "price_usd", "volume_last_24_hours", "txn_volume_last_24_hours_usd", "active_addresses", "addresses_balance_greater_10_usd_count"];
 
 // get db
 async function getDB() {
@@ -207,27 +209,100 @@ async function loadData() {
     catch {
       console.log('not' + metric);
     }
- 
-      
-     
-
-
-    
-  
-  // try to get the csv 
-  
   }
-  
+
+  // Get TVL
+  try {
+    await loadTVL(tokenObj);
+  }
+  catch(e) {
+    console.error(e);
+  }
+
+  // Make selection dropdown
+  // makeSelection
   console.log(info);
+}
+    
+function makeSelection() {
+  let parent = document.getElementById('chart-options');
+  
+}
+
+
+// document.getElementById('submit').onclick = function() {
+//   var selected = [];
+//   for (var option of document.getElementById('pets').options) {
+//     if (option.selected) {
+//       selected.push(option.value);
+//     }
+//   }
+//   alert(selected);
+// }
+
+async function loadTVL(tokenObj) {
+  let sector = tokenObj.sector;
+  let slug = tokenObj.slug;
+  let sym = tokenObj.symbol;
+
+  info[sym]['tvl'] = {};
+  info[sym]['tvl']['Date'] = [];
+  info[sym]['tvl']['TVL'] = [];
+
+  if (sector.includes('Layer')) {
+    // Get historical data
+    let tvlData = await fetch("https://api.llama.fi/charts/" + slug)
+      .then((response) => response.json())
+      .then(data => {
+          return data.slice(data.length - 500); // totalLiquidityUSD;
+      });
+
+    // Add data to info object
+    for (let day of tvlData) {
+      // adding zeros bc dates on defillama are wrong!
+      let time = Number(day["date"] + '000');
+      let date = new Date(time);
+      //console.log(date.toISOString().slice(0, 10));
+      
+      info[sym]['tvl']['Date'].push(date.toISOString().slice(0, 10));
+      info[sym]['tvl']['TVL'].push(day.totalLiquidityUSD);
+
+      
+    }
+  }
+  else {
+    let tvlData = await fetch("https://api.llama.fi/protocol/" + slug)
+      .then((response) => response.json())
+      .then(data => {
+          return data.tvl.slice(data.tvl.length - 500); 
+      });
+
+    // Add data to info object
+    
+    for (let day of tvlData) {
+      // adding zeros bc dates on defillama are wrong!
+      let time = Number(day["date"] + '000');
+      let date = new Date(time);
+      //console.log(date.toISOString().slice(0, 10));
+      
+      info[sym]['tvl']['Date'].push(date.toISOString().slice(0, 10));
+      info[sym]['tvl']['TVL'].push(day.totalLiquidityUSD);
+    }
+    
+  }
 }
 
 //loadData();
+//https://data.messari.io/api/v1/assets/btc/metrics/price/time-series?start=2020-01-01&end=2022-09-07&interval=1d&order=descending
 
+const metricID = ["price", "act.addr.cnt", "addr.bal.10.cnt", "txn.vol"]
 
 // Assign chart parameters
 
 function assignChartData(y, period) {
   let labels = structuredClone(info[sym][y]["Date"]);
+  //console.log(y);
+  //console.log(labels)
   let temp_xy = info[sym][y];
   let xy = structuredClone(Object.values(temp_xy)[1]);
   if (period !== 0 && period < labels.length) {
@@ -302,7 +377,7 @@ async function makeChart() {
   if (!info[sym]) {
     await loadData();
     for (let metric in info[sym]) {
-    if (metric !== 'name') {
+    if (metric !== 'name' && info[sym][metric]["Date"].length > 2) {
       let newDiv = document.createElement("div");
         newDiv.setAttribute('id', metric + '1');
       newDiv.setAttribute('class', 'child');

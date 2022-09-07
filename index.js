@@ -1,6 +1,11 @@
 const mySecret = process.env['messari-api-key'];
 
 
+// let tim = Number("1662336000" + '000');
+// let dat = new Date(tim);
+// console.log(dat.toISOString().slice(0, 10));
+
+
 
 // Token List 
 const tokens = [
@@ -768,7 +773,7 @@ function updateReturn() {
       console.log(roi)
       db.update({symbol: token.symbol}, { $set: { 'metrics.return_since_launch' : roi} }, {}, function () {
            });
-      console.log(docs[0].metrics.return_since_launch);
+      //console.log(docs[0].metrics.return_since_launch);
   });
   }
 }
