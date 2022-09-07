@@ -34,7 +34,7 @@ const tokens = [
   {
     name: 'LidoDAO',
     symbol: "ldo",
-    slug: "lido-dao",
+    slug: "lido",
     cg_slug: "lido-dao",
     sector: "DeFi",
     'sub-sector': "Liquid Staking",
@@ -43,7 +43,7 @@ const tokens = [
   {
     name: 'Polygon', 
     symbol: "matic",
-    slug: "matic-network",
+    slug: "polygon",
     cg_slug: "matic-network",
     sector: "Layer-2",
     'sub-sector': "ETH Scaling",
@@ -61,7 +61,7 @@ const tokens = [
   {
     name: "Sushiswap",
     symbol: "sushi",
-    slug: "sushi",
+    slug: "sushiswap",
     cg_slug: "sushi",
     sector: "DeFi",
     'sub-sector': "DEX",
@@ -140,7 +140,7 @@ const tokens = [
   {
     name: "BNB",
     symbol: "bnb",
-    slug: "binance-coin",
+    slug: "bsc",
     cg_slug: "binancecoin",
     sector: "Layer-1",
     'sub-sector': "Exchange",
@@ -158,7 +158,7 @@ const tokens = [
   {
     name: "Maker",
     symbol: "mkr",
-    slug: "maker",
+    slug: "makerdao",
     cg_slug: "maker",
     sector: "DeFi",
     'sub-sector': "Stablecoins",
@@ -257,7 +257,7 @@ const tokens = [
     symbol: "perp",
     slug: "perpetual-protocol",
     cg_slug: "perpetual-protocol",
-    sector: "layer-1",
+    sector: "Layer-1",
     'sub-sector': "Perpetuals DEX",
     priority: 'L'
   },
@@ -273,7 +273,7 @@ const tokens = [
   {
     name: "Tracer DAO",
     symbol: "tcr",
-    slug: "tracer-dao",
+    slug: "tracer",
     cg_slug: "tracer-dao",
     sector: "Other",
     'sub-sector': "Derivatives",
@@ -292,7 +292,7 @@ const tokens = [
     slug: "umami-finance",
     cg_slug: "umami-finance",
     sector: "DeFi",
-    'sub-sector': "lending",
+    'sub-sector': "Lending",
     priority: 'L'
   },
   {
@@ -388,12 +388,17 @@ db.loadDatabase();
 //db.insert(tokens);
 
 app.get('/', (req, res) => {
-  res.sendFile('index.html');
+  res.sendFile(__dirname + '/public/watchlist.html');
 })
 
 app.get('/dapps', (req, res) => {
-  res.sendFile('dapps.html');
+  res.sendFile(__dirname + '/public/dapps.html');
 })
+
+app.get('/analysis', (req, res) => {
+  res.sendFile(__dirname + '/public/analysis.html');
+})
+
 
 app.get('/projects/:symbol', (req, res) => {
   res.sendFile(__dirname + '/public/charts.html');
@@ -559,19 +564,35 @@ setInterval(
             catch {
                 console.log('');
             }
-
-            try {
-              obj["tvl"] = await fetch("https://api.llama.fi/tvl/" + token.slug)
-    .then((response) => response.json())
-    .then(data => {
-        return data;
-    })
-              console.log('tvl obtained')
+          
+          // TVL chains
+          if (token.sector.includes('Layer')) {
+              try {
+                obj["tvl"] = await fetch("https://api.llama.fi/charts/" + token.slug)
+      .then((response) => response.json())
+      .then(data => {
+          return data[data.length - 1].totalLiquidityUSD;
+      });
+                console.log('tvl obtained');
+              }
+            catch {
+              console.log('no tvl' + token.name);
             }
-          catch {
-            console.log('no tvl' + token.name);
           }
-
+          // TVL Protocols
+          else {
+              try {
+                obj["tvl"] = await fetch("https://api.llama.fi/tvl/" + token.slug)
+      .then((response) => response.json())
+      .then(data => {
+          return data;
+      })
+                console.log('tvl obtained')
+              }
+            catch {
+              console.log('no tvl' + token.name);
+            }
+          }
 
     //       if (counter > 20) {
   
@@ -585,15 +606,15 @@ setInterval(
     //       catch {
     //         console.log('no launch price for ' + token.name)
     //       }
-    // //       }
-    //       if (counter < 20) {
+    //         }
+          // if (counter < 21) {
 
           
             updateToken(sym, obj, 'metrics');
-          //}
+        // }
             
         }
-    }, 3600000);
+    }, 36000000);
 
 
 // console.log(launchp);
@@ -611,11 +632,11 @@ function loadHis() {
 
 
 
-// var tvl = await fetch("https://api.llama.fi/tvl/uniswap")
-//     .then((response) => response.json())
-//     .then(data => {
-//         return data;
-//     })
+// var tvl = await fetch("https://api.llama.fi/charts/ethereum")
+//       .then((response) => response.json())
+//       .then(data => {
+//           return data[data.length - 1].totalLiquidityUSD;
+//       });
 
 // console.log(tvl);
 

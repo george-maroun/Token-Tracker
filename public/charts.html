@@ -13,12 +13,12 @@
   }
 
 body {
-  font-family: monospace;
+  font-family: Inter,-apple-system,BlinkMacSystemFont,segoe ui,Roboto,Helvetica,Arial,sans-serif;
   font-size: 14px;
 }
 
 .main {
-  padding-top: 5%;
+  padding-top: 2%;
   padding-left: 3%;
 }
 
@@ -348,20 +348,7 @@ async function makeChart() {
     }
    }
   }
-  
 
-  
-    //chartCreated = true; 
-   // }
- //    else {
- //      metric_chart.data = price_data;
- //      price_chart.update();
- //      if (users_data) {
- //        users_chart.update();
- //      }
- //      else {
- // document.getElementById('usersChart').style.visibility = 'hidden';
- //      }
   console.log('info');
   console.log(info);
     
@@ -393,15 +380,27 @@ async function makeTable() {
       let stat = el.replaceAll('_', ' ');
       c.innerHTML = "<b>" + stat.charAt(0).toUpperCase() + stat.slice(1); + "</b>";
       c.style.width = '235px';
-      if (el === 'price_usd') {
-        c1.innerHTML = '$' + obj.metrics[el];
+      // Format price
+      if (el.includes('price')) {
+        c1.innerHTML = '$' + Math.round(Number(obj.metrics[el]) * 100) / 100;
       }
+      // Format percentages
       else if (el.includes('percent') || el.includes('return')) {
         if (Number(obj.metrics[el]) > 0) {
           c1.innerHTML = `<span style="color:green"> +${obj.metrics[el]}% </span>`;
         }
         else {
           c1.innerHTML = `<span style="color:FireBrick"> ${obj.metrics[el]}%</span>`;
+        }
+      }
+      // Format TVL
+      else if (el.includes('tvl')) {
+        let tvl = obj.metrics[el];
+        if (typeof tvl === 'number') {
+        c1.innerHTML = tvl > 1000000000 ? Math.round(tvl/100000000)/10 + 'B' : Math.round(tvl/100000)/10 + 'M';
+          }
+        else {
+          c1.innerHTML = tvl
         }
       }
       else {

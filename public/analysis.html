@@ -20,22 +20,21 @@
     </div>
 
     <div class="nav">
-      <a onclick="handleClick(this)" id="nav-watchlist" class="nav-button">Watchlist</a>
-      <a onclick="handleClick(this)" id="nav-dapps" class="nav-button">DApps</a>
-      <a onclick="handleClick(this)" id="nav-analysis" class="nav-button">Analysis</a>
+      <a href='/' id="nav-watchlist" class="nav-button">Watchlist</a>
+      <a href='/dapps' id="nav-dapps" class="nav-button">DApps</a>
+      <a href='/analysis' id="nav-analysis" class="nav-active">Analysis</a>
     </div>
 
-    <div style="height: 2.4rem;">
+    <div style="margin: 1.5rem">
       
     </div>
 
-     <div>
-      <div id='dapps'></div>
+     <div id='tables' style="display:flex;  
+    flex-direction:row;">
+    </div>
+    <div id='all'>
     </div>
 
-    <div>
-      <div id='watchlist'></div>
-    </div>
     <br></br>
 
   </div>
@@ -47,7 +46,7 @@
   <br ></br>
 <!--   <script src="app.js"></script> -->
 
-  <script src="table.js"></script>
+  <script src="analysis.js"></script>
  <!--
   This script places a badge on your repl's full-browser view back to your repl's cover
   page. Try various colors for the theme: dark, light, red, orange, yellow, lime, green,
@@ -57,9 +56,3 @@
 </body>
 
 </html>
-
-
-
-
-
-
