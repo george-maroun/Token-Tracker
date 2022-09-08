@@ -199,7 +199,7 @@ async function loadData() {
     info[sym][metric] = {};
     info[sym][metric][dates] = [];
     info[sym][metric][y] = [];
-    for (let j = 0; j < table.length; j++) {
+    for (let j = 100; j < table.length; j++) {
       const row = table[j].split(',');
       
       info[sym][metric][dates].push(row[0].replaceAll('"', ''));
@@ -254,7 +254,7 @@ async function loadTVL(tokenObj) {
     let tvlData = await fetch("https://api.llama.fi/charts/" + slug)
       .then((response) => response.json())
       .then(data => {
-          return data.slice(data.length - 500); // totalLiquidityUSD;
+          return data.slice(data.length - 300); // totalLiquidityUSD;
       });
 
     // Add data to info object
@@ -274,7 +274,7 @@ async function loadTVL(tokenObj) {
     let tvlData = await fetch("https://api.llama.fi/protocol/" + slug)
       .then((response) => response.json())
       .then(data => {
-          return data.tvl.slice(data.tvl.length - 500); 
+          return data.tvl.slice(data.tvl.length - 300); 
       });
 
     // Add data to info object

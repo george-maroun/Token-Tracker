@@ -90,7 +90,7 @@ async function displayWatchlist(tokens) {
 
     var parent = document.getElementById("watchlist");
 
-    var title = document.createElement('h2');
+    var title = document.createElement('h3');
 
     title.innerHTML = 'All tokens';
   
@@ -101,9 +101,10 @@ async function displayWatchlist(tokens) {
     parent.appendChild(myTableDiv);
 
     var table = document.createElement('TABLE');
-    table.border = '1';
-     
+    //table.border = '1';
+    table.setAttribute('class', "table")
     var header = table.createTHead();
+    header.setAttribute('class', "table-dark")
     var row = header.insertRow(0);
     header.setAttribute('class', 'th');
     var cell = row.insertCell(0);

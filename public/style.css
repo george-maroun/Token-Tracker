@@ -4,16 +4,14 @@ html, body {
 }
 
 .title {
-  font-size: 44px;
+  font-size: 36px;
   font-weight: bold;
 }
 
 body {
   font-family: Inter,-apple-system,BlinkMacSystemFont,segoe ui,Roboto,Helvetica,Arial,sans-serif;
-  font-size: 15px;
+  font-size: 14px;
   background: #f5f5f5; 
-/*   background: linear-gradient(180deg, rgba(25,32,189,0.23435311624649857) 0%, rgba(255,83,0,0.2091430322128851) 100%);
-  height: 1500px; */
 }
 
 .main {
@@ -38,9 +36,17 @@ body {
 
 .nav-button {
   margin-right: 1rem;
-  font-size: 15px;
+  font-size: 14px;
+  font-weight: bold !important;
   text-decoration: none;
-  color: black !important;
+  border-radius: 5px;
+  background-color: rgb(248, 248, 248);
+  color: #3f3f3f;
+  padding-left: 12px;
+  padding-right: 12px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  border-width: 0;
 }
 
 .nav-active {
@@ -61,6 +67,7 @@ body {
   text-decoration: none;
   font-weight: bold;
   color: black !important;
+  background-color:white;
 }
 
 .child {
@@ -78,31 +85,31 @@ body {
   border-radius: 15px 15px 0px 0px;
 } */
 
-table {
+/* table {
   border-collapse: collapse;
   border: 0px !important;
 }
 tr {
   border-bottom: 1px solid #d1d1d1;
-}
+} */
 
-td {
+/* td {
   border: 0px !important;
   padding-right: 2rem;
   padding-top: 7px;
   padding-bottom: 7px;
   padding-left: 7px;
 }
-
+*/
 
 .th {
-  height: 37px;
+  height: 35px;
   color: white;
   border: 0px !important;
   border-collapse: collapse;
   background: #383838;
   font-weight: bold;
-}
+} 
 
 
 .first_col {
@@ -114,13 +121,17 @@ td {
 }
 
 .link {
-  color: black;
+  color: black !important;
   text-decoration: none;
 }
-
-a:hover {
+.link:hover {
+  color: black !important;
   text-decoration: underline;
 }
+
+/* a:hover {
+  text-decoration: underline;
+} */
 
 a:visited { 
  color: black; 
@@ -128,4 +139,37 @@ a:visited {
 
 .crit:hover {
     text-decoration: underline;
+}
+
+
+.container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+    width: 100%;
+    padding-right: var(--bs-gutter-x,.75rem);
+    padding-left: var(--bs-gutter-x,3%) !important;
+    padding-top: .8rem !important;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+b,
+strong {
+  font-weight: bold !important;
+}
+
+
+
+
+
+@media (min-width: 800px) {
+  .byCat {
+    display:flex;  
+    flex-direction:row;
+  }
+}
+
+@media (max-width: 799px) {
+  .byCat {
+    display:flex;  
+    flex-direction:column;
+  }
 }

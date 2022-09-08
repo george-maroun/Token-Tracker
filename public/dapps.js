@@ -88,7 +88,7 @@ async function makeDappsTable(dapps) {
 
   parent.innerHTML = '';
 
-  var title = document.createElement('h2');
+  var title = document.createElement('h3');
 
   title.innerHTML = 'Users';
 
@@ -100,10 +100,11 @@ async function makeDappsTable(dapps) {
   parent.appendChild(myTableDiv);
 
   var table = document.createElement('TABLE');
-  table.border = '1';
+  table.setAttribute('class', 'table');
    
   var header = table.createTHead();
   header.setAttribute('class', 'th');
+  //header.setAttribute('class', 'table-dark');
   var row = header.insertRow(0);
   var cell = row.insertCell(0);
   var cell1 = row.insertCell(1);

@@ -10,14 +10,52 @@ async function getDB() {
 
 //displayTables();
 
-async function displayTables() {
+// async function displayTables() {
+  
+//   const projectsWithUsersData = ['uni', 'ens', 'looks', 'matic', 'zrx']
+//   let tokens = await getDB();
+//   console.log(tokens);
+  
+//   tokens = sortTokens(tokens, 'percent_change_last_1_month');
+//   makeAllTables(tokens);
+  
+// }
+
+async function displayAll() {
   
   const projectsWithUsersData = ['uni', 'ens', 'looks', 'matic', 'zrx']
   let tokens = await getDB();
   console.log(tokens);
   
   tokens = sortTokens(tokens, 'percent_change_last_1_month');
-  makeAllTables(tokens);
+
+  tokens.sort(function(a, b) {
+      return a.metrics.return_since_launch - b.metrics.return_since_launch;
+    });
+  
+  //makeAllTables(tokens);
+  document.getElementById('tables').innerHTML = '';
+  makeAllProjectsTable(tokens);
+  
+}
+
+
+async function displayByCategory() {
+
+  document.getElementById('all').innerHTML = '';
+  
+  const projectsWithUsersData = ['uni', 'ens', 'looks', 'matic', 'zrx']
+  let tokens = await getDB();
+  console.log(tokens);
+  
+  tokens = sortTokens(tokens, 'percent_change_last_1_month');
+
+  tokens.sort(function(a, b) {
+      return a.metrics.return_since_launch - b.metrics.return_since_launch;
+    });
+  
+  //makeAllTables(tokens);
+  makeCatTables(tokens);
   
 }
 
@@ -33,25 +71,41 @@ async function changeCriterion(crit) {
 
   let criterion = criterionRaw.toLowerCase()
   console.log(criterion);
+
+  tokens.sort(function(a, b) {
+    if (b[criterion] < a[criterion]) {
+      return -1;
+    }
+    else if (b[criterion] > a[criterion]) {
+      return 1;
+    }
+    return 0;
+  });
   
-  let sortedTokens = sortTokens(tokens, criterion);
-  console.log(sortedTokens)
-  makeAllProjectsTable(sortedTokens);
-  
+  //let sortedTokens = sortTokens(tokens, criterion);
+  console.log(tokens)
+  makeAllProjectsTable(tokens);
+
   crit.style.textDecoration = "underline !important";
 }
 
 
 function sortTokens(tokens, criterion) {
   tokens.sort(function(a, b) {
-    return b[criterion] - a[criterion];
-    });
+    if (b[criterion] < a[criterion]) {
+      return -1;
+    }
+    else if (b[criterion] > a[criterion]) {
+      return 1;
+    }
+    return 0;
+  });
   
   return tokens;
 }
 
 
-function makeAllTables(tokens) {
+function makeCatTables(tokens) {
   const categories = ['priority', 'sector', 'sub-sector'];
   
   tokens.sort(function(a, b) {
@@ -63,7 +117,7 @@ function makeAllTables(tokens) {
     
     container.setAttribute('id', cat);
     
-    let title = document.createElement('h2'); 
+    let title = document.createElement('h3'); 
    title.innerHTML = cat.charAt(0).toUpperCase() + cat.slice(1);
     container.appendChild(title);
     document.getElementById('tables').appendChild(container)
@@ -82,7 +136,7 @@ function makeAllTables(tokens) {
     
   }
 
-  //makeAllProjectsTable(tokens);
+  
 }
 
 function makeSortable(obj) {
@@ -140,8 +194,10 @@ async function makeTable(arr, cat) {
   var myTable = document.getElementById(cat);
 
   var table = document.createElement('TABLE');
-     
+  
+  table.setAttribute('class', "table");  
   var header = table.createTHead();
+  
   header.setAttribute('class', 'th');
   var row = header.insertRow(0);
   var cell = row.insertCell(0);
@@ -183,7 +239,7 @@ async function makeTable(arr, cat) {
     c2.innerHTML = el[2] >= 0 ? `<span style='color:green'>+ ${el[2]} %</span>` : `<span style='color:FireBrick'>${el[2]} %</span>`;
     
   }
-  table.className = 'table_styling';
+  //table.className = 'table_styling';
 
   
   myTable.appendChild(table);
@@ -196,9 +252,12 @@ function makeAllProjectsTable(tokens) {
   document.getElementById('all').innerHTML = '';
   
   var myTable = document.getElementById('all');
+  let title = document.createElement('h3'); 
+  title.innerHTML = 'All tokens';
+  myTable.appendChild(title);
 
   var table = document.createElement('TABLE');
-     
+  table.setAttribute('class', "table")
   var header = table.createTHead();
   header.setAttribute('class', 'th');
   var row = header.insertRow(0);
@@ -209,9 +268,9 @@ function makeAllProjectsTable(tokens) {
   var cell4 = row.insertCell(4);
 
   cell.innerHTML = `<b>Name</b>`;
-  cell1.innerHTML = "<b onclick='changeCriterion(this)' >Priority</b>"
-  cell2.innerHTML = "<b onclick='changeCriterion(this)' >Sector</b>";
-  cell3.innerHTML = "<b onclick='changeCriterion(this)' >Sub-sector</b>"
+  cell1.innerHTML = "<b onclick='changeCriterion(this)' class='crit'>Priority</b>"
+  cell2.innerHTML = "<b onclick='changeCriterion(this)' class='crit'>Sector</b>";
+  cell3.innerHTML = "<b onclick='changeCriterion(this)' class='crit'>Sub-sector</b>"
   cell4.innerHTML = "<b>Return</b>";
 
   var tableBody = document.createElement('Tbody');
@@ -230,7 +289,7 @@ function makeAllProjectsTable(tokens) {
     var c3 = r.insertCell(3);
     var c4 = r.insertCell(4);
 
-    c.innerHTML = token.name;
+    c.innerHTML = `<a href=/projects/${token.symbol} class='link'> ${token.name} </a>`;
 
     if (token.priority === 'H') {
       c1.innerHTML = `<b style='color:green'>${token.priority}</b>`;
@@ -251,7 +310,7 @@ function makeAllProjectsTable(tokens) {
     c4.innerHTML = roi >= 0 ? `<span style='color:green'>+ ${roi} %</span>` : `<span style='color:FireBrick'>${roi} %</span>`;
     
   }
-  table.className = 'table_styling';
+  //table.className = 'table_styling';
 
   
   myTable.appendChild(table);
