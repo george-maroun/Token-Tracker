@@ -169,7 +169,8 @@ async function makeDappsTable(dapps) {
 
 
 function getCurrentUsers(dapp) {
-  //console.log(dapp)
+  console.log(dapp)
+  console.log(dapp.historical["Users"]);
   let lastSeven = dapp.historical["Users"].slice(dapp.historical["Users"].length - 8);
   let sum = lastSeven.reduce((partialSum, a) => partialSum + Number(a), 0);
   //console.log(sum);
@@ -177,7 +178,7 @@ function getCurrentUsers(dapp) {
 }
 
 function getUsers3M(dapp) {
-  let len = dapp.historical["Users"].length;
+  let len = dapp.historical["Users "].length;
   let lastSeven = dapp.historical["Users"].slice(len - 98, len - 90);
   //console.log(lastSeven);
   let sum = lastSeven.reduce((partialSum, a) => partialSum + Number(a), 0);
@@ -230,7 +231,7 @@ async function populateDapps(projects, all) {
   }
   
       
-  
+  //console.log(dapps)
   return dapps;
 }
 //
