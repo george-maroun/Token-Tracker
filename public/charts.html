@@ -6,6 +6,21 @@
   <meta name="viewport" content="width=device-width">
   <title>replit</title>
 <!--   <link href="style.css" rel="stylesheet" type="text/css" /> -->
+  <!-- CSS only -->
+  
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css">
+  
+
+<!--   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>  -->
+<!--   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">  -->
+  <script data-require="jquery@2.2.4" data-semver="2.2.4" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <link data-require="bootstrap@3.3.7" data-semver="3.3.7" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <script data-require="bootstrap@3.3.7" data-semver="3.3.7" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.min.css" />
+
   
   <style>
     html, body {
@@ -24,7 +39,7 @@ body {
 }
 
 .button {
-  font-family: monospace;
+  font-family: Inter,-apple-system,BlinkMacSystemFont,segoe ui,Roboto,Helvetica,Arial,sans-serif;
   border: 0px;
   outline:0px;
   margin-top: 5px;
@@ -90,11 +105,12 @@ a:visited {
 <body>
   <div class="main">
     <a href='/' style="font-size: 25px; text-decoration: none">&#8592;</a>
-    <div>
-      <h1 id="name"></h1> 
+    
+    <div style='margin-top:1rem;'>
+      <h2 id="name"></h2> 
     </div>
 
-    <h2 id="table_title"></h2>
+    <h3 style='margin-top:0.6rem;' id="table_title"></h3>
     
     <div id='statsTable'></div>
 
@@ -102,8 +118,8 @@ a:visited {
       <div style="float: left; margin-right: 1rem">
     
       </div>
-          <div id='chart-options' style="display:flex; align-items: center;">
-            <h2 id="figs" style="float:left; margin-right: 1rem"></h2>
+          <div style="display:flex; align-items: center; margin-bottom:2rem; margin-top:2rem;">
+            <h3 id="figs" style="float:left; margin-top:1rem; margin-right: 1rem"></h3>
             <select onchange="makeChart()" name="period" id="period" class="button">
               <option value="1m">1M</option>
               <option value="3m">3M</option>
@@ -111,6 +127,14 @@ a:visited {
               <option value="1y">1Y</option>
               <option value="max">Max</option> 
             </select>
+
+             &nbsp &nbsp
+            <select id='chart-options' name='condiments' class="button" multiple>
+              <option value='price_usd' selected>Price</option>
+            </select>
+            
+            
+
           </div>
   </div>
 
@@ -131,11 +155,14 @@ a:visited {
     let temp = window.location.href.split('/');
     let sym = temp[temp.length - 1]
 
+    
+
 
 
 //alert(sym);
 let tokenName;
 let data; 
+var selected = ['price_usd'];
 
 const historic = ["users", "price_usd", "volume_last_24_hours", "txn_volume_last_24_hours_usd", "active_addresses", "addresses_balance_greater_10_usd_count"];
 
@@ -201,9 +228,11 @@ async function loadData() {
     info[sym][metric][y] = [];
     for (let j = 100; j < table.length; j++) {
       const row = table[j].split(',');
-      
-      info[sym][metric][dates].push(row[0].replaceAll('"', ''));
-      info[sym][metric][y].push(row[1].replaceAll('"', ''));
+      // If price is 0 or not price, skip
+      if (row[1].replaceAll('"', '') !== '') {
+        info[sym][metric][dates].push(row[0].replaceAll('"', ''));
+        info[sym][metric][y].push(row[1].replaceAll('"', ''));
+        }
       }
     }
     catch {
@@ -220,26 +249,42 @@ async function loadData() {
   }
 
   // Make selection dropdown
-  // makeSelection
+  makeSelection()
   console.log(info);
 }
     
 function makeSelection() {
   let parent = document.getElementById('chart-options');
-  
+  for (let metric in info[sym]) {
+    if (metric !== 'name' && info[sym][metric]["Date"].length > 2) {
+      if (metric !== 'price_usd') {
+        var option = document.createElement("option");
+        // edit metric name
+        let temp = metric.replaceAll('_', ' ');
+        temp = temp.includes('last') ? temp.split('last')[0]: temp;
+        option.text = temp.charAt(0).toUpperCase() + temp.slice(1);
+        option.value = metric;
+        parent.appendChild(option);
+      }
+    }
+  }
 }
 
 
-// document.getElementById('submit').onclick = function() {
-//   var selected = [];
-//   for (var option of document.getElementById('pets').options) {
-//     if (option.selected) {
-//       selected.push(option.value);
-//     }
-//   }
-//   alert(selected);
-// }
+document.getElementById('chart-options').onchange = function() {
+  selected = [];
+  for (var option of document.getElementById('chart-options').options) {
+    if (option.selected) {
+      selected.push(option.value.replaceAll(' ', '_'));
+    }
+  }
+  //alert(selected);
+  console.log(selected);
+  makeChart(selected);
+}
+//console.log(selected)
 
+    
 async function loadTVL(tokenObj) {
   let sector = tokenObj.sector;
   let slug = tokenObj.slug;
@@ -368,66 +413,48 @@ function getPeriod() {
 
 
 
-
 async function makeChart() {
 
-  
+  // Get period
   let period = getPeriod();
-
-  if (!info[sym]) {
-    await loadData();
-    for (let metric in info[sym]) {
-    if (metric !== 'name' && info[sym][metric]["Date"].length > 2) {
-      let newDiv = document.createElement("div");
-        newDiv.setAttribute('id', metric + '1');
-      newDiv.setAttribute('class', 'child');
-      
-      document.getElementById('charts').appendChild(newDiv);
-      
-      let newCanvas = document.createElement("CANVAS");
-        newCanvas.setAttribute('id', metric);
-      
-          newDiv.appendChild(newCanvas);
-
-
-      
-      let chart_data = assignChartData(metric, period);
   
-      //if (!chartCreated) {
-      metric_chart = new Chart(
-        newCanvas,
-        config_chart(chart_data)
-      );
+  // Remove all previously created charts
+  for (let metric in info[sym]) {
+    if (document.getElementById(metric + '1')) {
+      document.getElementById(metric + '1').remove();
     }
-   }
-  } 
-  else {
-    for (let metric in info[sym]) {
-
-      if (metric !== 'name') {
-          document.getElementById(metric).remove();
-
-        let newCanvas = document.createElement("CANVAS");
-        newCanvas.setAttribute('id', metric);
-      
-          document.getElementById(metric + "1").appendChild(newCanvas);
-            
-    
-      let chart_data = assignChartData(metric, period);
-  
-      //if (!chartCreated) {
-      metric_chart = new Chart(
-        document.getElementById(metric),
-        config_chart(chart_data)
-      );
-    }
-   }
   }
 
-  console.log('info');
-  console.log(info);
+  // Create new charts based on selected metrics
+  for (let metric of selected) {
+    if (info[sym][metric]["Date"].length > 2) {
     
-}
+    let newDiv = document.createElement("div");
+    
+    newDiv.setAttribute('id', metric + '1');
+    newDiv.setAttribute('class', 'child');
+    
+    document.getElementById('charts').appendChild(newDiv);
+    
+    let newCanvas = document.createElement("CANVAS");
+    newCanvas.setAttribute('id', metric);
+    
+    newDiv.appendChild(newCanvas);
+
+
+    
+    let chart_data = assignChartData(metric, period);
+
+    //if (!chartCreated) {
+    metric_chart = new Chart(
+      newCanvas,
+      config_chart(chart_data)
+    );
+  }
+ }
+} 
+ 
+
 
 
 async function makeTable() {
@@ -475,7 +502,7 @@ async function makeTable() {
         c1.innerHTML = tvl > 1000000000 ? Math.round(tvl/100000000)/10 + 'B' : Math.round(tvl/100000)/10 + 'M';
           }
         else {
-          c1.innerHTML = tvl
+          c1.innerHTML = '-'
         }
       }
       else {
@@ -493,7 +520,9 @@ async function makeTable() {
 
 async function displayStats() {
   document.getElementById('statsTable').innerHTML = 'loading data...';
-  await makeChart();
+  selected = ['price_usd'];
+  await loadData();
+  await makeChart(selected);
   makeTable();
 }
 
@@ -509,12 +538,9 @@ setValue()
 
 
   </script>
- <!--
-  This script places a badge on your repl's full-browser view back to your repl's cover
-  page. Try various colors for the theme: dark, light, red, orange, yellow, lime, green,
-  teal, blue, blurple, magenta, pink!
- -->
-  <script src="https://replit.com/public/js/replit-badge.js" theme="blue" defer></script> 
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.min.js"></script>
+
+  
 </body>
 
 </html>
